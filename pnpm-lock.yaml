@@ -38,6 +38,9 @@ importers:
       '@aimeetx/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
+      '@aimeetx/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@aimeetx/ui':
         specifier: workspace:*
         version: link:../../packages/ui

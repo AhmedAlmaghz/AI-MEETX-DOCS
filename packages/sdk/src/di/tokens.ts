@@ -18,6 +18,7 @@ export const TOKENS = {
   // Repositories (Ports)
   UserRepository: Symbol.for('@aimeetx/sdk/UserRepository'),
   AuthRepository: Symbol.for('@aimeetx/sdk/AuthRepository'),
+  ProfileRepository: Symbol.for('@aimeetx/sdk/ProfileRepository'),
 
   // Use Cases
   GetCurrentUserUseCase: Symbol.for('@aimeetx/sdk/GetCurrentUserUseCase'),
@@ -26,6 +27,19 @@ export const TOKENS = {
   LoginAsGuestUseCase: Symbol.for('@aimeetx/sdk/LoginAsGuestUseCase'),
   LogoutUseCase: Symbol.for('@aimeetx/sdk/LogoutUseCase'),
   RefreshSessionUseCase: Symbol.for('@aimeetx/sdk/RefreshSessionUseCase'),
+
+  // Profile Use Cases
+  GetProfileUseCase: Symbol.for('@aimeetx/sdk/GetProfileUseCase'),
+  UpdateProfileUseCase: Symbol.for('@aimeetx/sdk/UpdateProfileUseCase'),
+  UploadAvatarUseCase: Symbol.for('@aimeetx/sdk/UploadAvatarUseCase'),
+  DeleteAvatarUseCase: Symbol.for('@aimeetx/sdk/DeleteAvatarUseCase'),
+  UpdateLanguagePreferenceUseCase: Symbol.for('@aimeetx/sdk/UpdateLanguagePreferenceUseCase'),
+  UpdateThemeUseCase: Symbol.for('@aimeetx/sdk/UpdateThemeUseCase'),
+  UpdateNotificationSettingsUseCase: Symbol.for('@aimeetx/sdk/UpdateNotificationSettingsUseCase'),
+  UpdatePrivacySettingsUseCase: Symbol.for('@aimeetx/sdk/UpdatePrivacySettingsUseCase'),
+  UpdateAccessibilitySettingsUseCase: Symbol.for('@aimeetx/sdk/UpdateAccessibilitySettingsUseCase'),
+  UpdatePresenceUseCase: Symbol.for('@aimeetx/sdk/UpdatePresenceUseCase'),
+  DeactivateAccountUseCase: Symbol.for('@aimeetx/sdk/DeactivateAccountUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];

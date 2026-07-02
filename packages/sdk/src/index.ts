@@ -40,8 +40,69 @@ export {
   RefreshSessionUseCase,
 } from './domain/usecase/auth-use-cases.js';
 
+// Profile domain
+export type {
+  Theme,
+  UserRole,
+  AccountStatus,
+  Presence,
+  ProfileVisibility,
+  UserProfile,
+  UserPreferences,
+  NotificationSettings,
+  PrivacySettings,
+  AccessibilitySettings,
+  ProfileError,
+} from './domain/model/profile.js';
+export { AVATAR_CONSTRAINTS } from './domain/model/profile.js';
+export type {
+  AvatarUpload,
+  AvatarUploadResult,
+  ProfileUpdate,
+  ProfileRepository,
+} from './domain/port/profile-repository.js';
+export type {
+  ProfileUpdatedEvent,
+  AvatarUpdatedEvent,
+  AvatarRemovedEvent,
+  ThemeChangedEvent,
+  LanguageChangedEvent,
+  TranslationLanguageChangedEvent,
+  NotificationSettingsUpdatedEvent,
+  PrivacySettingsUpdatedEvent,
+  AccessibilitySettingsUpdatedEvent,
+  PresenceChangedEvent,
+  AccountDeactivatedEvent,
+  ProfileEvent,
+} from './domain/event/profile-events.js';
+export {
+  GetProfileUseCase,
+  type GetProfileCommand,
+  UpdateProfileUseCase,
+  type UpdateProfileCommand,
+  UploadAvatarUseCase,
+  type UploadAvatarCommand,
+  DeleteAvatarUseCase,
+  type DeleteAvatarCommand,
+  UpdateLanguagePreferenceUseCase,
+  type UpdateLanguagePreferenceCommand,
+  UpdateThemeUseCase,
+  type UpdateThemeCommand,
+  UpdateNotificationSettingsUseCase,
+  type UpdateNotificationSettingsCommand,
+  UpdatePrivacySettingsUseCase,
+  type UpdatePrivacySettingsCommand,
+  UpdateAccessibilitySettingsUseCase,
+  type UpdateAccessibilitySettingsCommand,
+  UpdatePresenceUseCase,
+  type UpdatePresenceCommand,
+  DeactivateAccountUseCase,
+  type DeactivateAccountCommand,
+} from './domain/usecase/profile-use-cases.js';
+
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
+export { HttpProfileRepository } from './data/http-profile-repository.js';
 export { WebSecureTokenStorage } from './data/web-secure-token-storage.js';
 
 // DI

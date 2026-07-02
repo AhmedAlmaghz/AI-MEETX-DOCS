@@ -16,6 +16,7 @@
   "dependencies": {
     "@aimeetx/network": "workspace:*",
     "@aimeetx/sdk": "workspace:*",
+    "@aimeetx/types": "workspace:*",
     "@aimeetx/ui": "workspace:*",
     "next": "^16.0.0",
     "react": "^19.0.0",
