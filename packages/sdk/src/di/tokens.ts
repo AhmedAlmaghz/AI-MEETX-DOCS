@@ -13,12 +13,19 @@ export const TOKENS = {
   HttpClient: Symbol.for('@aimeetx/sdk/HttpClient'),
   EventBus: Symbol.for('@aimeetx/sdk/EventBus'),
   KeyValueStore: Symbol.for('@aimeetx/sdk/KeyValueStore'),
+  SecureTokenStorage: Symbol.for('@aimeetx/sdk/SecureTokenStorage'),
 
   // Repositories (Ports)
   UserRepository: Symbol.for('@aimeetx/sdk/UserRepository'),
+  AuthRepository: Symbol.for('@aimeetx/sdk/AuthRepository'),
 
   // Use Cases
   GetCurrentUserUseCase: Symbol.for('@aimeetx/sdk/GetCurrentUserUseCase'),
+  LoginWithEmailUseCase: Symbol.for('@aimeetx/sdk/LoginWithEmailUseCase'),
+  RegisterWithEmailUseCase: Symbol.for('@aimeetx/sdk/RegisterWithEmailUseCase'),
+  LoginAsGuestUseCase: Symbol.for('@aimeetx/sdk/LoginAsGuestUseCase'),
+  LogoutUseCase: Symbol.for('@aimeetx/sdk/LogoutUseCase'),
+  RefreshSessionUseCase: Symbol.for('@aimeetx/sdk/RefreshSessionUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];
