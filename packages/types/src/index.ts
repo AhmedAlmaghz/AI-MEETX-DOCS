@@ -23,6 +23,10 @@ export type {
   NotificationId,
   TranslationSegmentId,
   AttachmentId,
+  TranslationSessionId,
+  SummaryId,
+  ActionItemId,
+  ReportId,
   IsoDateString,
   Uuid,
 } from './branded.js';

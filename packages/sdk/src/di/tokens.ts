@@ -103,6 +103,33 @@ export const TOKENS = {
   MarkMessageReadUseCase: Symbol.for('@aimeetx/sdk/MarkMessageReadUseCase'),
   MarkConversationReadUseCase: Symbol.for('@aimeetx/sdk/MarkConversationReadUseCase'),
   GetUnreadCountUseCase: Symbol.for('@aimeetx/sdk/GetUnreadCountUseCase'),
+
+  // Translation Repositories (Ports)
+  TranslationSessionRepository: Symbol.for('@aimeetx/sdk/TranslationSessionRepository'),
+  TranscriptRepository: Symbol.for('@aimeetx/sdk/TranscriptRepository'),
+  TranslationRouter: Symbol.for('@aimeetx/sdk/TranslationRouter'),
+  TranslationGateway: Symbol.for('@aimeetx/sdk/TranslationGateway'),
+  TranslationPrivacyLayer: Symbol.for('@aimeetx/sdk/TranslationPrivacyLayer'),
+
+  // Translation Use Cases
+  StartTranslationUseCase: Symbol.for('@aimeetx/sdk/StartTranslationUseCase'),
+  StopTranslationUseCase: Symbol.for('@aimeetx/sdk/StopTranslationUseCase'),
+  ChangeTargetLanguageUseCase: Symbol.for('@aimeetx/sdk/ChangeTargetLanguageUseCase'),
+  StreamAudioToTranslationUseCase: Symbol.for('@aimeetx/sdk/StreamAudioToTranslationUseCase'),
+
+  // AI Repositories (Ports)
+  MeetingSummaryRepository: Symbol.for('@aimeetx/sdk/MeetingSummaryRepository'),
+  ActionItemRepository: Symbol.for('@aimeetx/sdk/ActionItemRepository'),
+  MeetingReportRepository: Symbol.for('@aimeetx/sdk/MeetingReportRepository'),
+  TranscriptContextRepository: Symbol.for('@aimeetx/sdk/TranscriptContextRepository'),
+  AiMeetingService: Symbol.for('@aimeetx/sdk/AiMeetingService'),
+
+  // AI Use Cases
+  GenerateRunningSummaryUseCase: Symbol.for('@aimeetx/sdk/GenerateRunningSummaryUseCase'),
+  ExtractActionItemsUseCase: Symbol.for('@aimeetx/sdk/ExtractActionItemsUseCase'),
+  AskAiQuestionUseCase: Symbol.for('@aimeetx/sdk/AskAiQuestionUseCase'),
+  GeneratePostMeetingReportUseCase: Symbol.for('@aimeetx/sdk/GeneratePostMeetingReportUseCase'),
+  ProcessTranscriptSegmentUseCase: Symbol.for('@aimeetx/sdk/ProcessTranscriptSegmentUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];

@@ -35,6 +35,10 @@ export type RecordingId = Brand<string, 'RecordingId'>;
 export type NotificationId = Brand<string, 'NotificationId'>;
 export type TranslationSegmentId = Brand<string, 'TranslationSegmentId'>;
 export type AttachmentId = Brand<string, 'AttachmentId'>;
+export type TranslationSessionId = Brand<string, 'TranslationSessionId'>;
+export type SummaryId = Brand<string, 'SummaryId'>;
+export type ActionItemId = Brand<string, 'ActionItemId'>;
+export type ReportId = Brand<string, 'ReportId'>;
 
 /**
  * ISO 8601 timestamp string.

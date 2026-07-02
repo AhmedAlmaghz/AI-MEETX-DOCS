@@ -520,6 +520,136 @@ export {
   type GetUnreadCountCommand,
 } from './domain/usecase/chat-use-cases.js';
 
+// Translation domain
+export type {
+  // Translation Types
+  TranslationSessionStatus,
+  TranslationSession,
+  TranscriptSegment,
+  TranslatedAudioChunk,
+  TranslationSessionError,
+  TranslationLanguagePreference,
+  GeminiLiveTranslateConfig,
+  TranslationError,
+} from './domain/model/translation.js';
+export {
+  TRANSLATION_CONSTRAINTS,
+  DEFAULT_GEMINI_LIVE_TRANSLATE_CONFIG,
+} from './domain/model/translation.js';
+export type {
+  // Translation Repository Ports
+  CreateTranslationSessionInput,
+  TranslationSessionRepository,
+  TranscriptRepository,
+  TranslationRouter,
+  TranslationEventCallbacks,
+  TranslationGateway,
+  TranslationPrivacyLayer,
+} from './domain/port/translation-repository.js';
+export type {
+  // Translation Session Events
+  TranslationSessionStartedEvent,
+  TranslationSessionTerminatedEvent,
+  TranslationSessionStatusChangedEvent,
+  TranslationSessionErrorEvent,
+  // Translation Delivery Events
+  LiveTranslationDeliveredEvent,
+  TranscriptSegmentDeliveredEvent,
+  // Translation Language Preference Events
+  TranslationLanguagePreferenceSetEvent,
+  TranslationLanguagePreferenceRemovedEvent,
+  // Event Unions
+  TranslationSessionEvent,
+  TranslationDeliveryEvent,
+  TranslationLanguagePreferenceEvent,
+  TranslationEvent,
+} from './domain/event/translation-events.js';
+export {
+  // Translation Use Cases
+  StartTranslationUseCase,
+  type StartTranslationCommand,
+  StopTranslationUseCase,
+  type StopTranslationCommand,
+  ChangeTargetLanguageUseCase,
+  type ChangeTargetLanguageCommand,
+  StreamAudioToTranslationUseCase,
+  type StreamAudioToTranslationCommand,
+  GetActiveTranslationSessionsUseCase,
+  type GetActiveTranslationSessionsCommand,
+} from './domain/usecase/translation-use-cases.js';
+
+// AI domain
+export type {
+  // AI Types
+  ReportStatus,
+  MeetingTranscriptContext,
+  TranscriptContextSegment,
+  MeetingSummary,
+  ActionItem,
+  MeetingReport,
+  GeminiAiConfig,
+  AiError,
+} from './domain/model/ai.js';
+export {
+  AI_CONSTRAINTS,
+  AI_PROMPT_TEMPLATES,
+  DEFAULT_GEMINI_AI_CONFIG,
+  DEFAULT_TRANSCRIPT_WINDOW_MINUTES,
+} from './domain/model/ai.js';
+export type {
+  // AI Repository Ports
+  CreateMeetingSummaryInput,
+  MeetingSummaryRepository,
+  CreateActionItemInput,
+  ActionItemRepository,
+  CreateMeetingReportInput,
+  MeetingReportRepository,
+  TranscriptContextRepository,
+  AskAiQuestionInput,
+  AiMeetingService,
+} from './domain/port/ai-repository.js';
+export type {
+  // Meeting Summary Events
+  MeetingSummaryGeneratedEvent,
+  MeetingSummaryUpdatedEvent,
+  // Action Item Events
+  ActionItemDetectedEvent,
+  ActionItemsExtractedEvent,
+  // Meeting Report Events
+  MeetingReportGenerationStartedEvent,
+  MeetingReportReadyEvent,
+  MeetingReportFailedEvent,
+  MeetingReportStatusChangedEvent,
+  // AI Q&A Events
+  AiQuestionAskedEvent,
+  AiQuestionAnsweredEvent,
+  // Event Unions
+  MeetingSummaryEvent,
+  ActionItemEvent,
+  MeetingReportEvent,
+  AiQuestionEvent,
+  AiEvent,
+} from './domain/event/ai-events.js';
+export {
+  // AI Use Cases
+  ProcessTranscriptSegmentUseCase,
+  type ProcessTranscriptSegmentCommand,
+  GenerateRunningSummaryUseCase,
+  type GenerateRunningSummaryCommand,
+  ExtractActionItemsUseCase,
+  type ExtractActionItemsCommand,
+  AskAiQuestionUseCase,
+  type AskAiQuestionCommand,
+  GeneratePostMeetingReportUseCase,
+  type GeneratePostMeetingReportCommand,
+  GetMeetingSummaryUseCase,
+  type GetMeetingSummaryCommand,
+  GetActionItemsUseCase,
+  type GetActionItemsCommand,
+  GetMeetingReportUseCase,
+  type GetMeetingReportCommand,
+} from './domain/usecase/ai-use-cases.js';
+
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
 export { HttpProfileRepository } from './data/http-profile-repository.js';
