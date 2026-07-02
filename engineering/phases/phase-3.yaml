@@ -1,0 +1,36 @@
+# phase-3.yaml — Meeting Platform
+name: Meeting Platform
+phase: 3
+description: >
+  Build the complete meeting lifecycle system including room management,
+  participant control, waiting room, scheduling, presence monitoring,
+  invitations, and permissions — across all 9 meeting subdomains.
+
+steps:
+  - Setup feature-meeting subdomains (lifecycle, participants, room, permissions, invitations, waiting-room, scheduling, presence, shared)
+  - Create database schemas for meetings, participants, invitations, schedules, and presence indexes
+  - Implement Domain models (Meeting, Participant, WaitingRoomEntry, ScheduleRule)
+  - Implement Repository ports (LifecycleRepository, RoomRepository, ParticipantRepository, WaitingRoomRepository, SchedulingRepository)
+  - Implement Data Sources (PostgreSQL databases and Redis ephemeral caches)
+  - Implement Use cases:
+      - CreateMeetingUseCase
+      - JoinMeetingUseCase
+      - AdmitParticipantUseCase
+      - HeartbeatUseCase
+      - ScheduleMeetingUseCase
+  - Implement Presentation layer: MeetingRosterScreen, WaitingRoomScreen, SchedulingDashboard
+  - Write JUnit 5 unit tests and Redis Testcontainers integration tests for presence monitoring and lobby admittance
+
+exit_gates:
+  - Host can create a meeting and share an invite link
+  - Participants enter waiting room and are admitted by host
+  - Heartbeat drops participant after 15-second timeout
+  - Schedule creation and recurrence rules validated
+  - All tests pass
+
+dependencies:
+  - phase-0
+  - phase-2
+
+produces:
+  - :feature-meeting

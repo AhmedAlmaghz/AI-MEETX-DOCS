@@ -1,0 +1,20 @@
+name: Admin Tenant Dashboard
+phase: 8
+description: >
+  Build the multi-tenant administration portal (SuperAdmin dashboard, organization settings)
+  consuming feature-admin SDK endpoints.
+
+steps:
+  - Setup app/(app)/admin route folders (restricted to superadmin / tenant admin roles)
+  - Bind useTenantConfig, useFeatureFlags, and useAuditLogs hooks from the SDK
+  - Implement SuperAdminDashboard panel showing organizations, users, and statuses
+  - Implement OrgSettingsScreen allowing tenant configuration modifications
+  - Implement FeatureFlagsConfigPanel with toggles for core and preview features
+  - Implement AuditLogsTableView showing chronological tenant activity records
+  - Write Vitest security tests validating route protection for non-admin profiles
+
+exit_gates:
+  - Non-admin users are blocked from access to `/admin` routes and redirected to dashboard
+  - Feature flags updates update platform behaviors cleanly
+  - Audit logs display entries in a readable, paginated table (no delete/edit buttons present)
+  - Admin view tests pass successfully

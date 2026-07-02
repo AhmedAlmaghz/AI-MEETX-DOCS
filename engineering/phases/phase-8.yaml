@@ -1,0 +1,36 @@
+# phase-8.yaml — Administration Platform
+name: Administration Platform
+phase: 8
+description: >
+  Build the multi-tenant administration system including tenant management,
+  feature flags, immutable audit logging, and role-based access control.
+  Audit logs are protected by PostgreSQL row-level security (RLS) — no updates or deletes.
+
+steps:
+  - Setup feature-admin module directory structure
+  - Create database schemas for tenants, admin audit logs, and tenant members
+  - Configure PostgreSQL row-level security (RLS) policies for immutable audit logs
+  - Implement Domain models (Tenant, TenantFeatureFlags, AuditLogEntry)
+  - Implement Use cases:
+      - CreateTenantUseCase
+      - SuspendTenantUseCase
+      - UpdateFeatureFlagsUseCase
+      - QueryAuditLogUseCase
+      - InviteTenantMemberUseCase
+  - Implement Presentation layer: SuperAdminDashboard, OrgSettingsScreen, FeatureFlagsConfigPanel
+  - Implement Redis-backed feature flag caching with 60-second auto-eviction
+  - Write security tests checking role-based JWT claims for admin endpoints and audit log immutability
+
+exit_gates:
+  - Super admin can create, suspend, and configure tenants
+  - Feature flags toggle instantly (60-second Redis cache window)
+  - Audit log entries cannot be updated or deleted (RLS policy verified by tests)
+  - JWT role claims are enforced on all admin endpoints
+  - All security tests pass
+
+dependencies:
+  - phase-0
+  - phase-2
+
+produces:
+  - :feature-admin

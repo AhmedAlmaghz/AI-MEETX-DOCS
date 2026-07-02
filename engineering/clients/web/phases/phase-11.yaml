@@ -1,0 +1,18 @@
+name: Vercel & Production Release
+phase: 11
+description: >
+  Finalize production release configurations, CI/CD automated deployments, and health verifications.
+
+steps:
+  - Setup GitHub Actions release workflow triggering Vercel/Docker builds on main branch merge
+  - Configure production domain mappings, SSL certificates, and custom header routing
+  - Set up production Firebase config keys and SDK endpoints within Vercel dashboard
+  - Compile the production optimized Next.js build bundle (next build)
+  - Execute end-to-end smoke test verifying post-deployment room entry and translation
+  - Document final post-release checklist and system handoff guides
+
+exit_gates:
+  - Production build compiles successfully with zero warnings
+  - Vercel/GKE deployment finishes and endpoints map correctly to production URL
+  - E2E post-deploy validation smoke test passes successfully
+  - Dynamic route response times average < 200ms

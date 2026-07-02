@@ -1,0 +1,71 @@
+project:
+  name: AI Meeting Platform (AI MeetX Web Client)
+  current_version: MVP
+
+execution:
+  phases:
+    - id: PHASE_00
+      name: Web Shell & Design System
+      file: phases/phase-0.yaml
+      status: planned
+
+    - id: PHASE_01
+      name: Authentication UI
+      file: phases/phase-1.yaml
+      status: planned
+
+    - id: PHASE_02
+      name: Profile & Settings UI
+      file: phases/phase-2.yaml
+      status: planned
+
+    - id: PHASE_03
+      name: Meeting Room Layout
+      file: phases/phase-3.yaml
+      status: planned
+
+    - id: PHASE_04
+      name: Media Tracks & Playback
+      file: phases/phase-4.yaml
+      status: planned
+
+    - id: PHASE_05
+      name: Collaborative Chat UI
+      file: phases/phase-5.yaml
+      status: planned
+
+    - id: PHASE_06
+      name: AI Subtitles & Summaries
+      file: phases/phase-6.yaml
+      status: planned
+
+    - id: PHASE_07
+      name: Classroom Tools & Whiteboard
+      file: phases/phase-7.yaml
+      status: planned
+
+    - id: PHASE_08
+      name: Admin Tenant Dashboard
+      file: phases/phase-8.yaml
+      status: planned
+
+    - id: PHASE_09
+      name: Analytics & Fact Charts
+      file: phases/phase-9.yaml
+      status: planned
+
+    - id: PHASE_10
+      name: Security, Testing & Optimization
+      file: phases/phase-10.yaml
+      status: planned
+
+    - id: PHASE_11
+      name: Vercel & Production Release
+      file: phases/phase-11.yaml
+      status: planned
+
+rules:
+  build_one_phase_only: true
+  build_one_module_only: true
+  stop_after_phase: true
+  require_exit_gates: true

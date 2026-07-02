@@ -1,0 +1,20 @@
+name: Media Tracks & Playback
+phase: 4
+description: >
+  Integrate WebRTC media tracks inside the meeting UI. Binds camera and microphone inputs
+  using `@livekit/components-react` wrappers initialized by the TS SDK's media session.
+
+steps:
+  - Configure LiveKit JS room context provider binding in meeting layout
+  - Implement DeviceSettingsDialog allowing input microphone and camera selections
+  - Implement LocalVideoPreview widget displaying local webcam track before room entry
+  - Implement VideoGrid system rendering multiple dynamic remote track tiles with sizing
+  - Implement AudioTrackRenderer rendering participant voice feeds and echo cancels
+  - Implement ScreenShareCanvas to catch and display screen capture tracks
+  - Write Playwright E2E tests validating camera preview initialization
+
+exit_gates:
+  - Local microphone and webcam feeds are captured cleanly after user gesture permission
+  - Video grid handles layout resizing gracefully for up to 12 visible tiles
+  - Screen share starts and stops cleanly via browser capture API
+  - Playwright E2E tests pass

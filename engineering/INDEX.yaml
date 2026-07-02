@@ -1,0 +1,77 @@
+project:
+  name: AI Meeting Platform (AI MeetX)
+  version: 1.0.0
+  description: >
+    Enterprise-grade real-time meeting platform with AI-powered live translation,
+    classroom tools, multi-tenant administration, and analytics.
+    Built as a modular Android monorepo with event-driven architecture.
+
+# ─── Governance ───────────────────────────────────────────────────────────────
+governance:
+  constitution:
+    path: 00-governance/PROJECT_CONSTITUTION.md
+  decisions:
+    path: 00-governance/ADR/
+    files:
+      - ADR-001-GEMINI-LIVE-TRANSLATE.md
+      - ADR-002-MODULAR-MONOREPO.md
+      - ADR-003-REDIS-FIRST-STORAGE.md
+      - ADR-004-CLEAN-ARCHITECTURE-ISOLATION.md
+
+# ─── Product ──────────────────────────────────────────────────────────────────
+product:
+  requirements:
+    path: 01-product/02_PRODUCT_REQUIREMENTS.md
+
+# ─── Architecture ─────────────────────────────────────────────────────────────
+architecture:
+  rules:
+    path: 02-architecture/04_ARCHITECTURE_RULES.md
+
+# ─── Engineering Guides ───────────────────────────────────────────────────────
+engineering:
+  base: 03-engineering/
+  files:
+    - 03_EXECUTION_MASTER_PLAN.md
+    - 05_CODING_STANDARDS.md
+    - 06_TECH_STACK.md
+    - 07_REPOSITORY_STRUCTURE.md
+    - 08_DATABASE_OVERVIEW.md
+    - 09_EVENT_SYSTEM.md
+    - 10_AI_GUIDELINES.md
+    - 11_TESTING_GUIDE.md
+    - 12_DEPLOYMENT_GUIDE.md
+
+# ─── Features ─────────────────────────────────────────────────────────────────
+features:
+  base: features/
+  modules:
+    - feature-admin          # 7 docs: REQUIREMENTS, SPECIFICATION, DATABASE, API, EVENTS, TESTS, README
+    - feature-ai             # 7 docs
+    - feature-analytics      # 7 docs
+    - feature-auth           # 7 docs
+    - feature-chat           # 7 docs
+    - feature-classroom      # 7 docs
+    - feature-media          # 8 subdomains × ~6 docs = 43 docs total
+    - feature-meeting        # 9 subdomains × 7 docs = 61 docs total
+    - feature-notification   # 7 docs
+    - feature-profile        # 7 docs
+    - feature-recording      # 7 docs
+    - feature-translation    # 7 docs
+
+# ─── Execution Phases ─────────────────────────────────────────────────────────
+phases:
+  base: phases/
+  files:
+    - phase-0.yaml    # Foundation & Monorepo Setup
+    - phase-1.yaml    # Authentication & Identity (rewritten)
+    - phase-2.yaml    # Authentication & Identity
+    - phase-3.yaml    # Meeting Platform
+    - phase-4.yaml    # Media Engine
+    - phase-5.yaml    # Collaboration Platform
+    - phase-6.yaml    # AI Platform (Gemini Live Translate)
+    - phase-7.yaml    # Education Platform
+    - phase-8.yaml    # Administration Platform
+    - phase-9.yaml    # Analytics Platform
+    - phase-10.yaml   # Security, Testing & Quality
+    - phase-11.yaml   # Production Release

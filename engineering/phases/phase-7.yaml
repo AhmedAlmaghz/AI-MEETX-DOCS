@@ -1,0 +1,37 @@
+# phase-7.yaml — Education Platform
+name: Education Platform
+phase: 7
+description: >
+  Build classroom-specific features including quiz management, attendance tracking,
+  breakout rooms, whiteboard collaboration, and educational reporting.
+
+steps:
+  - Setup feature-classroom module directory structure
+  - Create database schemas for classroom sessions, attendance logs, quizzes, and breakout assignments
+  - Implement Domain models (ClassroomSession, Quiz, AttendanceRecord, BreakoutRoom)
+  - Implement Repository ports (ClassroomRepository, QuizRepository, AttendanceRepository)
+  - Implement Use cases:
+      - CreateQuizUseCase
+      - SubmitQuizResponseUseCase
+      - CreateBreakoutRoomsUseCase
+      - ExportAttendanceReportUseCase
+      - GradeQuizUseCase
+  - Implement Presentation layer: QuizScreen, WhiteboardCanvas, BreakoutManagerDashboard
+  - Integrate Canvas drawing synchronization over WebSockets / LiveKit Data Channels
+  - Write Testcontainers Postgres integration tests for quiz answer recording and attendance aggregation
+
+exit_gates:
+  - Host can create and publish a quiz during a live meeting
+  - Participants submit answers; grades are computed automatically
+  - Attendance is tracked and exportable as CSV
+  - Breakout rooms spawn and participants are assigned correctly
+  - Whiteboard drawing syncs across participants
+  - All Testcontainers tests pass
+
+dependencies:
+  - phase-0
+  - phase-3
+  - phase-4
+
+produces:
+  - :feature-classroom

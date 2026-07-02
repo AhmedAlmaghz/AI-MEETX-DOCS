@@ -1,0 +1,38 @@
+# phase-0.yaml — Foundation & Monorepo Setup
+name: Foundation & Monorepo Setup
+phase: 0
+description: >
+  Establish the Android monorepo skeleton, core infrastructure modules,
+  event bus, dependency injection wiring, and base navigation graph.
+  This phase produces zero user-visible features but is the prerequisite
+  for every subsequent phase.
+
+steps:
+  - Initialize Android Gradle monorepo with version catalog (libs.versions.toml)
+  - Create :core module with base interfaces (UseCase, Repository, DomainEvent)
+  - Create :core:events module — EventBus interface + InMemoryEventBus implementation
+  - Create :core:network module — Retrofit + OkHttp base factories, interceptors
+  - Create :core:storage module — Room base + EncryptedSharedPreferences wrapper
+  - Create :core:ui module — Design system tokens, shared Compose theme (colors, typography, spacing)
+  - Setup Hilt dependency injection across all modules
+  - Setup Jetpack Navigation (NavHost, NavGraph, typed routes)
+  - Setup Timber logging with debug/release tree configuration
+  - Setup GitHub Actions CI workflow — build, lint, unit test on every PR
+  - Verify build succeeds with zero warnings and all modules resolve correctly
+
+exit_gates:
+  - All modules compile successfully
+  - Hilt DI graph validates with no missing bindings
+  - InMemoryEventBus subscribe/publish unit test passes
+  - Navigation graph renders with no unresolved destinations
+  - CI pipeline green on first commit
+
+dependencies: []
+
+produces:
+  - :core
+  - :core:events
+  - :core:network
+  - :core:storage
+  - :core:ui
+  - :app (shell only — MainActivity + NavHost)

@@ -1,0 +1,32 @@
+# phase-11.yaml — Production Release
+name: Production Release
+phase: 11
+description: >
+  Deploy the finalized application to production infrastructure and publish
+  to the Google Play Store. Includes CI/CD pipeline configuration, database
+  migration execution, and end-to-end production validation.
+
+steps:
+  - Setup CI/CD production deployment pipelines in GitHub Actions
+  - Configure production Firebase project parameters (Auth, Firestore, Cloud Messaging)
+  - Deploy LiveKit SFU media servers to production cluster with SSL and host networking
+  - Run database migration scripts (Flyway) on the production PostgreSQL cluster
+  - Perform production sanity test suites and end-to-end user verification flows
+  - Compile the production-ready Android App Bundle (.aab) with optimization
+  - Generate release tags, release notes, and deploy the application to Google Play Console
+
+exit_gates:
+  - CI/CD pipeline builds and deploys automatically on main branch merge
+  - Flyway migrations run successfully on production PostgreSQL
+  - LiveKit SFU cluster health checks pass
+  - End-to-end production smoke test passes (create meeting, join, audio/video, leave)
+  - App Bundle approved and visible in Google Play Console internal testing track
+  - No critical or high-severity Crashlytics issues within first 24 hours
+
+dependencies:
+  - phase-10
+
+produces:
+  - Production Android App Bundle (.aab)
+  - Production deployment on Google Play (internal track)
+  - Deployed infrastructure (GKE, LiveKit SFU, PostgreSQL, Redis)

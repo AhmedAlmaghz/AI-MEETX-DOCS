@@ -1,0 +1,39 @@
+# phase-6.yaml — AI Platform
+name: AI Platform
+phase: 6
+description: >
+  Integrate Google Gemini Live for real-time translation and AI assistant capabilities.
+  Gemini sessions are grouped by target language (one WebSocket per language per meeting).
+  Raw transcripts are NEVER persisted — only processed outputs (summaries, action items, reports).
+
+steps:
+  - Setup feature-translation and feature-ai module directories
+  - Configure Google Gemini Live API (gemini-3.5-live-translate-preview) and WebSocket streaming dependencies
+  - Implement Domain models (TranslationSegment, MeetingSummary, ActionItem, MeetingReport)
+  - Implement Gemini API gateways and prompt templating engines
+  - Implement Use cases:
+      - StreamAudioToTranslationUseCase
+      - GenerateRunningSummaryUseCase
+      - AskAiQuestionUseCase
+      - GeneratePostMeetingReportUseCase
+      - ExtractActionItemsUseCase
+  - Implement PCM audio capture WebSocket piping to Gemini translation sessions
+  - Group translation sessions by target language (one session per language per meeting)
+  - Implement Presentation layer: RealTimeSubtitlesWidget, AiAssistantPanel, PostMeetingReportScreen
+  - Write WireMock integration tests for Gemini REST APIs and unit tests for streaming transcript pipelines
+
+exit_gates:
+  - Live translation subtitles appear within 2 seconds of speech
+  - One Gemini session per target language is maintained (no duplicate sessions)
+  - Post-meeting report generates correctly from meeting metadata (no raw transcript stored)
+  - AI Q&A assistant responds using meeting context
+  - All WireMock tests pass
+
+dependencies:
+  - phase-0
+  - phase-3
+  - phase-4
+
+produces:
+  - :feature-translation
+  - :feature-ai

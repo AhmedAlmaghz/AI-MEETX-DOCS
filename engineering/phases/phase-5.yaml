@@ -1,0 +1,36 @@
+# phase-5.yaml — Collaboration Platform
+name: Collaboration Platform
+phase: 5
+description: >
+  Implement in-meeting chat, file sharing, and real-time collaboration tools.
+  Chat is backed by Cloud Firestore for real-time delivery with offline support.
+
+steps:
+  - Setup feature-chat module directory structure
+  - Create database schemas for conversations, messages, and attachments
+  - Implement Domain models (Conversation, Message, Attachment)
+  - Implement Repository port (ChatRepository)
+  - Implement Data Source and mappings (Cloud Firestore real-time listener)
+  - Implement Use cases:
+      - SendMessageUseCase
+      - EditMessageUseCase
+      - DeleteMessageUseCase
+      - UploadAttachmentUseCase
+      - MarkReadUseCase
+  - Implement Presentation layer: InMeetingChatScreen, FileSharingSheet
+  - Setup file upload/download gateways to Firebase Storage / AWS S3
+  - Write JUnit 5 unit tests and local Firestore emulator integration tests for chat delivery
+
+exit_gates:
+  - Messages deliver in real-time to all meeting participants
+  - File attachments upload and download successfully
+  - Edited and deleted messages reflect immediately
+  - Firestore offline cache serves last 50 messages without network
+  - All tests pass
+
+dependencies:
+  - phase-0
+  - phase-3
+
+produces:
+  - :feature-chat

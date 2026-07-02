@@ -1,0 +1,103 @@
+project:
+  name: AI Meeting Platform (AI MeetX)
+  current_version: MVP
+  description: >
+    Enterprise-grade real-time meeting platform with AI-powered live translation,
+    virtual classrooms, multi-tenant administration, and analytics.
+
+execution:
+  total_phases: 12
+  phases:
+
+    - id: PHASE_00
+      name: Foundation & Monorepo Setup
+      file: phases/phase-0.yaml
+      feature: core infrastructure (:core, :app shell)
+      status: planned
+
+    - id: PHASE_01
+      name: Authentication & Identity
+      file: phases/phase-1.yaml
+      feature: feature-auth
+      status: planned
+
+    - id: PHASE_02
+      name: Profile & Account Management
+      file: phases/phase-2.yaml
+      feature: feature-profile
+      status: planned
+
+    - id: PHASE_03
+      name: Meeting Platform
+      file: phases/phase-3.yaml
+      feature: feature-meeting (9 subdomains)
+      status: planned
+
+    - id: PHASE_04
+      name: Media Engine
+      file: phases/phase-4.yaml
+      feature: feature-media (8 subdomains)
+      status: planned
+
+    - id: PHASE_05
+      name: Collaboration Platform
+      file: phases/phase-5.yaml
+      feature: feature-chat
+      status: planned
+
+    - id: PHASE_06
+      name: AI Platform
+      file: phases/phase-6.yaml
+      feature: feature-translation + feature-ai
+      status: planned
+
+    - id: PHASE_07
+      name: Education Platform
+      file: phases/phase-7.yaml
+      feature: feature-classroom
+      status: planned
+
+    - id: PHASE_08
+      name: Administration Platform
+      file: phases/phase-8.yaml
+      feature: feature-admin
+      status: planned
+
+    - id: PHASE_09
+      name: Analytics Platform
+      file: phases/phase-9.yaml
+      feature: feature-analytics
+      status: planned
+
+    - id: PHASE_10
+      name: Security, Testing & Quality
+      file: phases/phase-10.yaml
+      feature: feature-recording + feature-notification + security hardening
+      status: planned
+
+    - id: PHASE_11
+      name: Production Release
+      file: phases/phase-11.yaml
+      feature: CI/CD + Google Play deployment
+      status: planned
+
+rules:
+  build_one_phase_only: true
+  build_one_module_only: true
+  stop_after_phase: true
+  require_exit_gates: true
+  no_phase_skipping: true
+
+dependency_graph:
+  PHASE_00: []
+  PHASE_01: [PHASE_00]
+  PHASE_02: [PHASE_00, PHASE_01]
+  PHASE_03: [PHASE_00, PHASE_02]
+  PHASE_04: [PHASE_00, PHASE_03]
+  PHASE_05: [PHASE_00, PHASE_03]
+  PHASE_06: [PHASE_00, PHASE_03, PHASE_04]
+  PHASE_07: [PHASE_00, PHASE_03, PHASE_04]
+  PHASE_08: [PHASE_00, PHASE_02]
+  PHASE_09: [PHASE_00, PHASE_03, PHASE_08]
+  PHASE_10: [PHASE_00, PHASE_01, PHASE_02, PHASE_03, PHASE_04, PHASE_05, PHASE_06, PHASE_07, PHASE_08, PHASE_09]
+  PHASE_11: [PHASE_10]

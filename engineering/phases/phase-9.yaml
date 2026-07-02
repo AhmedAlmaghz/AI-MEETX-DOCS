@@ -1,0 +1,38 @@
+# phase-9.yaml — Analytics Platform
+name: Analytics Platform
+phase: 9
+description: >
+  Build the data pipeline and analytics dashboards. Raw facts are written by
+  event consumers; a 5-minute background cron aggregates pre-computed summaries.
+  No raw transcript data is ever stored — only meeting metadata facts.
+
+steps:
+  - Setup feature-analytics module directory structure
+  - Create database schemas for raw facts (meeting_facts, user_engagement_facts) and pre-computed summaries (tenant_daily_summaries, platform_daily_summaries)
+  - Implement Domain models (MeetingFact, UserEngagementFact, PlatformDailySummary)
+  - Implement Event consumer handlers:
+      - MeetingEndedConsumer
+      - RecordingReadyConsumer
+      - TranslationConsumer
+  - Implement Use cases:
+      - GetMeetingAnalyticsUseCase
+      - GetPlatformMetricsUseCase
+      - ExportMeetingReportUseCase
+  - Implement Presentation layer: UsageChartsScreen, PlatformSlaDashboard
+  - Implement the 5-minute background aggregation job (cron) computing summaries from facts
+  - Write performance JMH tests checking dashboard query times and PostgreSQL fact writing speed
+
+exit_gates:
+  - Meeting end event triggers fact insertion within 1 second
+  - Daily summary table updates within 5 minutes of meeting end
+  - Dashboard loads tenant-level data in < 500ms
+  - Platform-level aggregates load in < 2 seconds
+  - JMH benchmarks pass performance thresholds
+
+dependencies:
+  - phase-0
+  - phase-3
+  - phase-8
+
+produces:
+  - :feature-analytics

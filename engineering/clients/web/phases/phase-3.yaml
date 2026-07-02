@@ -1,0 +1,20 @@
+name: Meeting Room Layout
+phase: 3
+description: >
+  Establish the core meeting room interface layouts (roster panel, lobby view, speaker indicators)
+  consuming feature-meeting lifecycle, participants, and waiting-room hooks.
+
+steps:
+  - Setup app/(app)/meeting/[roomId] layout routing
+  - Bind useMeetingSession, useParticipantRoster, and useWaitingRoomAdmission hooks
+  - Implement WaitingRoomScreen (lobby staging area for participants waiting for host admission)
+  - Implement HostLobbyDashboard allowing hosts to admit/deny waiting entries
+  - Implement ActiveMeetingRoom grid viewport with participant panels and toggle toggles
+  - Implement ParticipantRosterPanel displaying current attendees, hands-raised, and roles
+  - Write Vitest unit tests checking client-side lobby admittance triggers
+
+exit_gates:
+  - Participant is blocked in lobby screen until host emits admission approval
+  - Roster updates dynamically as users join or leave
+  - Meeting layout displays correct toolbar states (Mute, Share, Leave)
+  - All tests pass

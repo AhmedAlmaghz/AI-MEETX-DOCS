@@ -1,0 +1,18 @@
+name: Profile & Settings UI
+phase: 2
+description: >
+  Build user profile pages, account management screens, and preference settings
+  consuming feature-profile SDK endpoints.
+
+steps:
+  - Setup app/(app)/profile routes (view and edit profile settings)
+  - Bind useUserProfile and useUpdateProfile hooks from meetx-platform-sdk
+  - Implement ProfileDashboard showing user details and preference options
+  - Implement EditProfileSheet with avatar upload widget (integrating with Firebase Storage)
+  - Implement LanguageSettings dropdown to configure primary translation preferences
+  - Write Vitest unit tests for language selector updates and state persistence
+
+exit_gates:
+  - User can edit display name, profile picture, and language preference
+  - Preferred language successfully persists and reflects in user configuration
+  - Profile components tests pass successfully

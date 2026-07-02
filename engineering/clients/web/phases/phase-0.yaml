@@ -1,0 +1,20 @@
+name: Web Shell & Design System Setup
+phase: 0
+description: >
+  Set up the React/Next.js 15 repository structure, Tailwind v4 design tokens,
+  and base layouts (Navbars, Sidebar containers, landing shell).
+
+steps:
+  - Initialize Next.js 15 App Router with TypeScript
+  - Configure Tailwind CSS v4 design tokens (meetx colors, typography, spacing)
+  - Configure shadcn/ui component library integration
+  - Setup core app layout layout.tsx (metadata, dynamic font loading)
+  - Implement base components (Button, Input, Card, Dialogue dialog wrappers)
+  - Configure Vitest testing runtime and basic mock configurations
+  - Set up GitHub Actions CI validation workflow (Lint + Typecheck)
+
+exit_gates:
+  - Code compiles without TypeScript errors
+  - Tailwind styles resolve correctly in all base layouts
+  - Next.js development server runs successfully
+  - Vitest runs base sanity tests successfully

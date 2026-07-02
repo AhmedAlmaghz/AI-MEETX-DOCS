@@ -1,0 +1,159 @@
+# AI MeetX — Engineering Context
+# This file is the canonical AI agent bootstrap contract.
+# Every AI coding agent MUST read this file first before touching any code.
+#
+# Document ID: CONTEXT-001
+# Version: 2.0.0
+# Status: Active
+
+# ─── Reading Protocol ──────────────────────────────────────────────────────────
+reading_protocol:
+  description: >
+    An AI agent MUST read documents in the order defined below before generating
+    any code or making any architectural decision.
+
+  step_1_governance:
+    - 00-governance/PROJECT_CONSTITUTION.md
+    - 00-governance/ADR/ADR-001-GEMINI-LIVE-TRANSLATE.md
+    - 00-governance/ADR/ADR-002-MODULAR-MONOREPO.md
+    - 00-governance/ADR/ADR-003-REDIS-FIRST-STORAGE.md
+    - 00-governance/ADR/ADR-004-CLEAN-ARCHITECTURE-ISOLATION.md
+
+  step_2_product:
+    - 01_PROJECT_VISION.md
+    - 01-product/02_PRODUCT_REQUIREMENTS.md
+
+  step_3_architecture:
+    - 02-architecture/04_ARCHITECTURE_RULES.md
+
+  step_4_engineering_guides:
+    - 03-engineering/03_EXECUTION_MASTER_PLAN.md
+    - 03-engineering/05_CODING_STANDARDS.md
+    - 03-engineering/06_TECH_STACK.md
+    - 03-engineering/07_REPOSITORY_STRUCTURE.md
+    - 03-engineering/08_DATABASE_OVERVIEW.md
+    - 03-engineering/09_EVENT_SYSTEM.md
+    - 03-engineering/10_AI_GUIDELINES.md
+    - 03-engineering/11_TESTING_GUIDE.md
+    - 03-engineering/12_DEPLOYMENT_GUIDE.md
+
+  step_5_roadmap:
+    - ROADMAP.yaml
+    - INDEX.yaml
+
+  step_6_current_phase:
+    description: >
+      Load the current phase YAML from the phases/ directory.
+      Read ONLY the features listed in that phase's 'produces' key.
+
+# ─── Feature Documentation Map ────────────────────────────────────────────────
+features:
+  base_path: features/
+
+  feature-auth:
+    path: features/feature-auth/
+    docs:
+      - REQUIREMENTS.md
+      - SPECIFICATION.md
+      - DATABASE.md
+      - API.md
+      - EVENTS.md
+      - TESTS.md
+      - README.md
+
+  feature-profile:
+    path: features/feature-profile/
+    docs:
+      - REQUIREMENTS.md
+      - SPECIFICATION.md
+      - DATABASE.md
+      - API.md
+      - EVENTS.md
+      - TESTS.md
+
+  feature-meeting:
+    path: features/feature-meeting/
+    subdomains:
+      - lifecycle
+      - participants
+      - room
+      - permissions
+      - invitations
+      - waiting-room
+      - scheduling
+      - presence
+      - shared
+    note: Each subdomain contains REQUIREMENTS, SPECIFICATION, DATABASE, API, EVENTS, TESTS
+
+  feature-media:
+    path: features/feature-media/
+    subdomains:
+      - media-platform
+      - media-session
+      - media-orchestrator
+      - audio-engine
+      - video-engine
+      - screen-share
+      - network-layer
+      - devices
+    note: Each subdomain contains REQUIREMENTS, SPECIFICATION, DATABASE (+ API, EVENTS, TESTS where applicable)
+
+  feature-chat:
+    path: features/feature-chat/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+  feature-translation:
+    path: features/feature-translation/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+    critical_adr: ADR-001-GEMINI-LIVE-TRANSLATE.md
+
+  feature-ai:
+    path: features/feature-ai/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+  feature-recording:
+    path: features/feature-recording/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+  feature-notification:
+    path: features/feature-notification/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+  feature-classroom:
+    path: features/feature-classroom/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+  feature-admin:
+    path: features/feature-admin/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+    critical_rule: Audit logs are immutable (PostgreSQL RLS — no UPDATE or DELETE)
+
+  feature-analytics:
+    path: features/feature-analytics/
+    docs: [REQUIREMENTS.md, SPECIFICATION.md, DATABASE.md, API.md, EVENTS.md, TESTS.md, README.md]
+
+# ─── Critical Constraints (Non-Negotiable) ────────────────────────────────────
+constraints:
+  module_isolation:
+    rule: Feature modules MUST NOT import from each other directly.
+    mechanism: All cross-module communication via domain events only.
+
+  ai_access:
+    rule: Only feature-translation and feature-ai may call Gemini APIs.
+    model: gemini-3.5-live-translate-preview (for translation)
+    session_policy: One WebSocket session per target language per meeting.
+
+  data_privacy:
+    rule: Raw audio/video streams and raw transcripts MUST NEVER be persisted.
+    stored_only: Processed outputs (summaries, action items, reports, metadata).
+
+  presence_timing:
+    heartbeat_interval_seconds: 5
+    disconnection_timeout_seconds: 15
+
+  audit_log_immutability:
+    rule: admin_audit_log table — RLS policy blocks all UPDATE and DELETE operations.
+
+  clean_architecture:
+    layers_in_order: [domain, data, presentation]
+    forbidden: Cross-layer direct calls; business logic in UI; shared mutable state across modules.

@@ -1,0 +1,44 @@
+# AI MeetX Web Client — Engineering Context
+# Document ID: WEB-CONTEXT-001
+# Version: 1.0.0
+# Status: Active
+
+client_relationship:
+  description: >
+    The Web Client is a pure presentation layer that runs on Next.js 15
+    and consumes the Core Platform/SDK via `meetx-platform-sdk`.
+  rules:
+    - Pure UI layout only. No database schemas are declared here.
+    - No direct data source modification; all mutations invoke generated TS SDK hooks.
+    - WebRTC media streaming uses `@livekit/components-react` bound to meeting rooms.
+
+reading_protocol:
+  step_1: ../../START_HERE.md
+  step_2: START_HERE.md
+  step_3: CONTEXT.yaml
+  step_4: ROADMAP.yaml
+  step_5: INDEX.yaml
+  step_6: 03-engineering/06_WEB_TECH_STACK.md
+  step_7: 02-architecture/04_WEB_ARCHITECTURE_RULES.md
+  step_8: phases/phase-{current_phase}.yaml
+
+feature_map:
+  feature-auth: features/feature-auth/
+  feature-profile: features/feature-profile/
+  feature-meeting: features/feature-meeting/
+  feature-media: features/feature-media/
+  feature-chat: features/feature-chat/
+  feature-translation: features/feature-translation/
+  feature-ai: features/feature-ai/
+  feature-recording: features/feature-recording/
+  feature-notification: features/feature-notification/
+  feature-classroom: features/feature-classroom/
+  feature-admin: features/feature-admin/
+  feature-analytics: features/feature-analytics/
+
+constraints:
+  ui_framework: React 19 / Next.js 15 (App Router)
+  design_system: Tailwind CSS v4 + shadcn/ui
+  state_management: Zustand (transient UI) + TanStack Query (cached SDK data)
+  typescript: Strict mode mandatory. No "any" types.
+  accessibility: WCAG 2.1 AA compliant. Radix UI primitives.

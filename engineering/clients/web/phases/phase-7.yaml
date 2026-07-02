@@ -1,0 +1,19 @@
+name: Classroom Tools & Whiteboard
+phase: 7
+description: >
+  Build education-focused widgets (whiteboard canvas, quiz sheets, attendance panels)
+  consuming feature-classroom SDK endpoints.
+
+steps:
+  - Implement WhiteboardOverlay dashboard (full-screen whiteboard drawing canvas)
+  - Bind whiteboard drawing paths to canvas events using HTML5 Canvas APIs
+  - Bind useClassroomQuizzes and useSubmitQuizAnswers hooks from the SDK
+  - Implement QuizSubmissionSheet displaying host-published quizzes and multiple-choice questions
+  - Implement AttendanceLogsPanel for classroom hosts showing dynamic session metrics
+  - Write Vitest unit tests for student quiz response mappings
+
+exit_gates:
+  - Drawing on canvas syncs paths to all participant whiteboards in < 100ms
+  - Student is presented with quiz forms immediately when published by teacher
+  - Teacher view updates attendance metrics instantly
+  - Unit tests pass successfully

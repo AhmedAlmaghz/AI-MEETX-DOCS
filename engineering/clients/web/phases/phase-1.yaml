@@ -1,0 +1,20 @@
+name: Authentication UI
+phase: 1
+description: >
+  Implement UI screens and hooks bindings for authentication (Login, Register, Guest Entry)
+  consuming the platform's feature-auth mutations.
+
+steps:
+  - Setup app/(auth) route group folders (login, register, guest)
+  - Bind useLoginMutation and useRegisterMutation hooks from meetx-platform-sdk
+  - Implement LoginScreen layout with Form inputs, validators, and error display
+  - Implement RegisterScreen layout with email verification step UI
+  - Implement GuestEntryScreen for quick passcode/nickname submission
+  - Implement AuthContext wrapper managing active JWT token state in sessionStorage
+  - Write Vitest component tests for login credential validation feedback
+
+exit_gates:
+  - User can submit credentials and route to dashboard upon successful login
+  - Form validation blocks empty or invalid email/passwords
+  - Token persists correctly across page refreshes
+  - Component tests pass successfully

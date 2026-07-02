@@ -1,0 +1,37 @@
+# phase-4.yaml — Media Engine
+name: Media Engine
+phase: 4
+description: >
+  Build all real-time media capabilities across 8 subdomains:
+  audio processing, video capture, screen sharing, network transport (WebRTC/LiveKit),
+  device management, orchestration, and session management.
+
+steps:
+  - Setup feature-media module structure (audio-engine, video-engine, screen-share, network-layer, devices, media-orchestrator, media-platform, media-session)
+  - Configure LiveKit WebRTC Android SDK dependencies
+  - Implement Domain models (MediaTrack, AudioSession, VideoSession, DeviceProfile, NetworkQuality)
+  - Implement WebRTC capture engines (CameraX video capture, AudioRecord audio capture)
+  - Implement Use cases:
+      - EnableCameraUseCase
+      - EnableMicrophoneUseCase
+      - ToggleScreenShareUseCase
+      - SelectDeviceUseCase
+      - AdaptMediaQualityUseCase
+  - Implement Presentation layer: CallScreen (Jetpack Compose), local and remote video track renderers
+  - Set up background audio focus management and echo cancellation policies
+  - Configure LiveKit SFU room connection and participant track subscription
+  - Write unit tests for media settings state and mock WebRTC capture configurations
+
+exit_gates:
+  - Audio and video tracks stream successfully via LiveKit SFU
+  - Screen share capture starts and stops cleanly
+  - Device switching preserves active stream continuity
+  - Quality degrades gracefully under simulated network loss
+  - All unit tests pass
+
+dependencies:
+  - phase-0
+  - phase-3
+
+produces:
+  - :feature-media

@@ -1,0 +1,18 @@
+name: Analytics & Fact Charts
+phase: 9
+description: >
+  Build usage charts and metrics dashboards consuming feature-analytics SDK endpoints.
+
+steps:
+  - Setup app/(app)/analytics route folders
+  - Bind usePlatformAnalytics and useTenantAnalytics hooks from the SDK
+  - Implement AnalyticsDashboard layout displaying charts, graphs, and metric lists
+  - Integrate Recharts/Chart.js library rendering meeting count, SLA compliance, and user minutes
+  - Implement ExportDataPanel supporting CSV and PDF analytics reporting exports
+  - Write Vitest tests checking correct processing of empty analytics facts
+
+exit_gates:
+  - Usage dashboards load historical metrics in < 500ms
+  - SLA charts update dynamically when tenant parameters toggle
+  - Data exports download cleanly in CSV and PDF formats
+  - All charts unit tests pass

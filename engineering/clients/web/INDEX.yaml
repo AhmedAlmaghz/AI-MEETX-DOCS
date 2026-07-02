@@ -1,0 +1,21 @@
+project:
+  name: AI Meeting Platform (AI MeetX Web Client)
+  version: 1.0.0
+
+documents:
+  vision:
+    path: START_HERE.md
+  context:
+    path: CONTEXT.yaml
+  roadmap:
+    path: ROADMAP.yaml
+  governance:
+    path: 00-governance/
+  architecture:
+    path: 02-architecture/
+  engineering_guides:
+    path: 03-engineering/
+  features:
+    path: features/
+  phases:
+    path: phases/

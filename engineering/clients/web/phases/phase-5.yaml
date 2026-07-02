@@ -1,0 +1,19 @@
+name: Collaborative Chat UI
+phase: 5
+description: >
+  Build the real-time meeting chat feed and file sharing panel consuming feature-chat hooks.
+
+steps:
+  - Setup ChatSidebar layout widget collapsible on the right-hand panel
+  - Bind useMeetingChatMessages and useSendMessageMutation hooks from the SDK
+  - Implement ChatFeed message list with styling (bubble messages, times, sender names)
+  - Implement ChatInput field supporting Zod validated submissions and text formatting
+  - Implement FileUploadZone within the chat box (handling drag-and-drop file staging)
+  - Configure progress indicators mapping attachment uploads to Firebase Storage
+  - Write Vitest components tests checking message sending and receipt triggers
+
+exit_gates:
+  - New chat messages append immediately to feed via real-time Firestore listeners
+  - Large file uploads display upload progress bars and resolve to click-to-download links
+  - Form validation blocks blank chat submissions
+  - All component tests pass

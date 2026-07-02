@@ -1,0 +1,43 @@
+# phase-2.yaml — Profile & Account Management
+name: Profile & Account Management
+phase: 2
+description: >
+  Build the user profile system including avatar management, display name,
+  language preferences, notification settings, and account-level controls.
+  This phase runs after authentication is stable and unlocks personalization
+  across all subsequent features.
+
+steps:
+  - Setup feature-profile module internal directory structure (presentation, domain, data)
+  - Create database schema for user profiles, preferences, and account settings
+  - Implement Domain models (UserProfile, LanguagePreference, NotificationSettings, AccountStatus)
+  - Implement Repository port (ProfileRepository)
+  - Implement Data Source and DTO mapping (Firestore / Supabase profile collections)
+  - Implement Use cases:
+      - GetProfileUseCase
+      - UpdateProfileUseCase
+      - UploadAvatarUseCase
+      - UpdateLanguagePreferenceUseCase
+      - UpdateNotificationSettingsUseCase
+      - DeactivateAccountUseCase
+  - Implement Presentation layer:
+      - ProfileScreen (Jetpack Compose, Material 3)
+      - EditProfileSheet
+      - AccountSettingsScreen
+      - ProfileViewModel with StateFlow state management
+  - Write JUnit 5 unit tests for all Use cases
+  - Write integration tests for profile update flows
+
+exit_gates:
+  - User can view and edit their display name, avatar, and bio
+  - Language preference persists across app restarts
+  - Notification settings are respected by feature-notification
+  - Avatar upload succeeds and thumbnail is cached locally
+  - All unit tests pass
+
+dependencies:
+  - phase-0
+  - phase-1
+
+produces:
+  - :feature-profile

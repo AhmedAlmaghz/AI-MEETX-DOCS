@@ -1,0 +1,20 @@
+name: Security, Testing & Optimization
+phase: 10
+description: >
+  Harden the web client for production: run full Playwright regression tests,
+  Axe accessibility audits, Lighthouse audits, bundle optimization, and caching settings.
+
+steps:
+  - Setup Playwright E2E suites running regression flows across core modules
+  - Set up automated Axe-core accessibility check script running on app routes
+  - Configure webpack/next bundle analyzers identifying large package impacts
+  - Implement cache-control headers and static asset CDN routing optimizations
+  - Perform security scans (npm audit, OWASP dependency check) on frontend packages
+  - Conduct Lighthouse audits verifying Performance, SEO, and Accessibility scores
+
+exit_gates:
+  - Playwright E2E regression tests pass with 100% success rate
+  - Axe accessibility score reveals zero critical violations on core paths
+  - Lighthouse audits return score of >= 90 across all categories
+  - Bundle size is reduced by >= 25% after optimization
+  - NPM audit reports zero high/critical vulnerabilities

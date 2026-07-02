@@ -1,0 +1,63 @@
+# phase-10.yaml — Security, Testing & Quality
+name: Security, Testing & Quality
+phase: 10
+description: >
+  Implement the final two standalone features (recording, notifications),
+  then harden the entire application for production: performance benchmarking,
+  ProGuard optimization, certificate pinning, PII leak checks, encrypted storage
+  verification, and full regression test suite execution across all 12 modules.
+
+steps:
+  # ── Feature: Recording ──────────────────────────────────────────────────────
+  - Setup feature-recording module directory structure
+  - Implement Domain models (Recording, RecordingStatus, PlaybackSession)
+  - Implement Use cases (StartRecordingUseCase, StopRecordingUseCase, GetRecordingUseCase, DeleteRecordingUseCase)
+  - Implement Presentation layer: RecordingControlsBar, RecordingsLibraryScreen
+  - Integrate recording pipeline with LiveKit SFU composite recording output
+
+  # ── Feature: Notifications ──────────────────────────────────────────────────
+  - Setup feature-notification module directory structure
+  - Configure Firebase Cloud Messaging (FCM) for push delivery
+  - Implement Domain models (Notification, NotificationChannel, DeliveryStatus)
+  - Implement Use cases (SendNotificationUseCase, MarkReadUseCase, ClearNotificationsUseCase)
+  - Implement Presentation layer: NotificationCenter, in-app notification overlay
+
+  # ── Security Hardening ───────────────────────────────────────────────────────
+  - Configure ProGuard/R8 rules for production Android app optimization and obfuscation
+  - Implement certificate pinning and payload encryption wrappers for network communications
+  - Conduct full security review on local storage caches (EncryptedSharedPreferences verification)
+  - Verify that no PII, plain tokens, or secrets leak into application logs (Timber checks)
+  - Setup performance verification benchmarks (JMH) across hot paths
+
+  # ── Full Test Suite ──────────────────────────────────────────────────────────
+  - Run full automated test suites (unit, integration, and UI tests) across all 12 modules
+  - Document final test coverage reports and performance optimization metrics
+
+exit_gates:
+  - Recording starts/stops correctly and file is accessible in library
+  - Push notifications deliver within 2 seconds
+  - Zero PII or secrets found in application logs
+  - Certificate pinning blocks connections to unexpected hosts
+  - ProGuard/R8 reduces APK size by >= 30%
+  - All 12 module test suites pass with >= 80% line coverage
+  - JMH benchmarks pass defined performance thresholds
+  - EncryptedSharedPreferences tamper tests pass
+
+dependencies:
+  - phase-0
+  - phase-1
+  - phase-2
+  - phase-3
+  - phase-4
+  - phase-5
+  - phase-6
+  - phase-7
+  - phase-8
+  - phase-9
+
+produces:
+  - :feature-recording
+  - :feature-notification
+  - Security hardened APK candidate
+  - Test coverage report
+  - Performance benchmark report

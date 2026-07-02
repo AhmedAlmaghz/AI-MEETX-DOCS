@@ -1,0 +1,19 @@
+name: AI Subtitles & Summaries
+phase: 6
+description: >
+  Implement visual representations of the platform's AI translation and assistant capabilities.
+  Binds real-time subtitles and summary panels to translation websocket events.
+
+steps:
+  - Bind useTranslationSubtitles and useAiMeetingAssistant hooks from the SDK
+  - Implement SubtitleOverlay layout rendering translated subtitle segments over video grid
+  - Implement AiAssistantSidebar with tabs for MeetingSummaries and Q&A chat
+  - Implement AiPromptInputField allowing users to ask questions from the active session context
+  - Implement ActionItemsList checklist component compiling extracted post-meeting tasks
+  - Write Vitest tests verifying correct rendering of translation segments
+
+exit_gates:
+  - Translated subtitles appear dynamically as voice transcription events stream in
+  - AI Assistant logs summaries and action items cleanly in the panel
+  - Visual privacy indicators (sparkle badge) appear when AI tracking is active
+  - All tests pass
