@@ -22,6 +22,7 @@ export type {
   RecordingId,
   NotificationId,
   TranslationSegmentId,
+  AttachmentId,
   IsoDateString,
   Uuid,
 } from './branded.js';

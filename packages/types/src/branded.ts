@@ -34,6 +34,7 @@ export type OrganizationId = Brand<string, 'OrganizationId'>;
 export type RecordingId = Brand<string, 'RecordingId'>;
 export type NotificationId = Brand<string, 'NotificationId'>;
 export type TranslationSegmentId = Brand<string, 'TranslationSegmentId'>;
+export type AttachmentId = Brand<string, 'AttachmentId'>;
 
 /**
  * ISO 8601 timestamp string.

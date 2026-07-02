@@ -83,6 +83,26 @@ export const TOKENS = {
   RegisterDeviceUseCase: Symbol.for('@aimeetx/sdk/RegisterDeviceUseCase'),
   GetMediaSessionUseCase: Symbol.for('@aimeetx/sdk/GetMediaSessionUseCase'),
   CreateNetworkSessionUseCase: Symbol.for('@aimeetx/sdk/CreateNetworkSessionUseCase'),
+
+  // Chat Repositories (Ports)
+  ConversationRepository: Symbol.for('@aimeetx/sdk/ConversationRepository'),
+  MessageRepository: Symbol.for('@aimeetx/sdk/MessageRepository'),
+  AttachmentRepository: Symbol.for('@aimeetx/sdk/AttachmentRepository'),
+  ReadReceiptRepository: Symbol.for('@aimeetx/sdk/ReadReceiptRepository'),
+
+  // Chat Use Cases
+  CreateConversationUseCase: Symbol.for('@aimeetx/sdk/CreateConversationUseCase'),
+  GetConversationUseCase: Symbol.for('@aimeetx/sdk/GetConversationUseCase'),
+  ListConversationsUseCase: Symbol.for('@aimeetx/sdk/ListConversationsUseCase'),
+  SendMessageUseCase: Symbol.for('@aimeetx/sdk/SendMessageUseCase'),
+  EditMessageUseCase: Symbol.for('@aimeetx/sdk/EditMessageUseCase'),
+  DeleteMessageUseCase: Symbol.for('@aimeetx/sdk/DeleteMessageUseCase'),
+  ListMessagesUseCase: Symbol.for('@aimeetx/sdk/ListMessagesUseCase'),
+  UploadAttachmentUseCase: Symbol.for('@aimeetx/sdk/UploadAttachmentUseCase'),
+  GetAttachmentsUseCase: Symbol.for('@aimeetx/sdk/GetAttachmentsUseCase'),
+  MarkMessageReadUseCase: Symbol.for('@aimeetx/sdk/MarkMessageReadUseCase'),
+  MarkConversationReadUseCase: Symbol.for('@aimeetx/sdk/MarkConversationReadUseCase'),
+  GetUnreadCountUseCase: Symbol.for('@aimeetx/sdk/GetUnreadCountUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];

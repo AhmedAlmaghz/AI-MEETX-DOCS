@@ -430,6 +430,96 @@ export {
   type CreateNetworkSessionCommand,
 } from './domain/usecase/media-use-cases.js';
 
+// Chat domain
+export type {
+  // Chat Types
+  MessageType,
+  MessageStatus,
+  ConversationType,
+  ConversationStatus,
+  AttachmentType,
+  AttachmentStatus,
+  // Chat Entities
+  Attachment,
+  Message,
+  Conversation,
+  ReadReceipt,
+  // Chat Errors
+  ChatError,
+} from './domain/model/chat.js';
+export {
+  CHAT_CONSTRAINTS,
+  getAttachmentTypeFromMime,
+  canEditMessage,
+  canDeleteMessage,
+} from './domain/model/chat.js';
+export type {
+  // Chat Repository Ports
+  CreateConversationInput,
+  ConversationUpdate,
+  ConversationRepository,
+  SendMessageInput,
+  MessageUpdate,
+  MessageRepository,
+  UploadAttachmentInput,
+  AttachmentRepository,
+  ReadReceiptRepository,
+} from './domain/port/chat-repository.js';
+export type {
+  // Conversation Events
+  ConversationCreatedEvent,
+  ConversationUpdatedEvent,
+  ConversationArchivedEvent,
+  ConversationClosedEvent,
+  ParticipantAddedToConversationEvent,
+  ParticipantRemovedFromConversationEvent,
+  // Message Events
+  MessageSentEvent,
+  MessageEditedEvent,
+  MessageDeletedEvent,
+  MessageStatusChangedEvent,
+  // Attachment Events
+  AttachmentUploadedEvent,
+  AttachmentDownloadedEvent,
+  AttachmentStatusChangedEvent,
+  // Read Receipt Events
+  MessageReadEvent,
+  ConversationMarkedReadEvent,
+  // Event Unions
+  ConversationEvent,
+  MessageEvent,
+  AttachmentEvent,
+  ReadReceiptEvent,
+  ChatEvent,
+} from './domain/event/chat-events.js';
+export {
+  // Chat Use Cases
+  CreateConversationUseCase,
+  type CreateConversationCommand,
+  GetConversationUseCase,
+  type GetConversationCommand,
+  ListConversationsUseCase,
+  type ListConversationsCommand,
+  SendMessageUseCase,
+  type SendMessageCommand,
+  EditMessageUseCase,
+  type EditMessageCommand,
+  DeleteMessageUseCase,
+  type DeleteMessageCommand,
+  ListMessagesUseCase,
+  type ListMessagesCommand,
+  UploadAttachmentUseCase,
+  type UploadAttachmentCommand,
+  GetAttachmentsUseCase,
+  type GetAttachmentsCommand,
+  MarkMessageReadUseCase,
+  type MarkMessageReadCommand,
+  MarkConversationReadUseCase,
+  type MarkConversationReadCommand,
+  GetUnreadCountUseCase,
+  type GetUnreadCountCommand,
+} from './domain/usecase/chat-use-cases.js';
+
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
 export { HttpProfileRepository } from './data/http-profile-repository.js';
