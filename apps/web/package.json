@@ -29,9 +29,9 @@
     "@types/react-dom": "^19.0.2",
     "eslint": "^9.18.0",
     "eslint-config-next": "^16.0.0",
-    "happy-dom": "^16.5.3",
+    "happy-dom": "^20.8.9",
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.6"
   }
 }
