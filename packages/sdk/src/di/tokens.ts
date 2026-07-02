@@ -57,6 +57,32 @@ export const TOKENS = {
   LowerHandUseCase: Symbol.for('@aimeetx/sdk/LowerHandUseCase'),
   ListParticipantsUseCase: Symbol.for('@aimeetx/sdk/ListParticipantsUseCase'),
   ListMeetingsUseCase: Symbol.for('@aimeetx/sdk/ListMeetingsUseCase'),
+
+  // Media Repositories (Ports)
+  MediaSessionRepository: Symbol.for('@aimeetx/sdk/MediaSessionRepository'),
+  AudioSessionRepository: Symbol.for('@aimeetx/sdk/AudioSessionRepository'),
+  VideoSessionRepository: Symbol.for('@aimeetx/sdk/VideoSessionRepository'),
+  NetworkSessionRepository: Symbol.for('@aimeetx/sdk/NetworkSessionRepository'),
+  ScreenShareSessionRepository: Symbol.for('@aimeetx/sdk/ScreenShareSessionRepository'),
+  MediaDeviceRepository: Symbol.for('@aimeetx/sdk/MediaDeviceRepository'),
+  MediaOrchestrationSessionRepository: Symbol.for('@aimeetx/sdk/MediaOrchestrationSessionRepository'),
+  MediaPlatformSessionRepository: Symbol.for('@aimeetx/sdk/MediaPlatformSessionRepository'),
+
+  // Media Use Cases
+  CreateMediaSessionUseCase: Symbol.for('@aimeetx/sdk/CreateMediaSessionUseCase'),
+  ActivateMediaSessionUseCase: Symbol.for('@aimeetx/sdk/ActivateMediaSessionUseCase'),
+  CloseMediaSessionUseCase: Symbol.for('@aimeetx/sdk/CloseMediaSessionUseCase'),
+  EnableCameraUseCase: Symbol.for('@aimeetx/sdk/EnableCameraUseCase'),
+  EnableMicrophoneUseCase: Symbol.for('@aimeetx/sdk/EnableMicrophoneUseCase'),
+  ToggleScreenShareUseCase: Symbol.for('@aimeetx/sdk/ToggleScreenShareUseCase'),
+  SelectDeviceUseCase: Symbol.for('@aimeetx/sdk/SelectDeviceUseCase'),
+  DiscoverDevicesUseCase: Symbol.for('@aimeetx/sdk/DiscoverDevicesUseCase'),
+  AdaptMediaQualityUseCase: Symbol.for('@aimeetx/sdk/AdaptMediaQualityUseCase'),
+  CreateOrchestrationSessionUseCase: Symbol.for('@aimeetx/sdk/CreateOrchestrationSessionUseCase'),
+  CreatePlatformSessionUseCase: Symbol.for('@aimeetx/sdk/CreatePlatformSessionUseCase'),
+  RegisterDeviceUseCase: Symbol.for('@aimeetx/sdk/RegisterDeviceUseCase'),
+  GetMediaSessionUseCase: Symbol.for('@aimeetx/sdk/GetMediaSessionUseCase'),
+  CreateNetworkSessionUseCase: Symbol.for('@aimeetx/sdk/CreateNetworkSessionUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];
