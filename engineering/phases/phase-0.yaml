@@ -1,38 +1,56 @@
-# phase-0.yaml — Foundation & Monorepo Setup
-name: Foundation & Monorepo Setup
+# phase-0.yaml — Foundation & SDK Monorepo Setup
+name: Foundation & SDK Monorepo Setup
 phase: 0
+architecture: ADR-005  # Next.js 16 SDK-First
 description: >
-  Establish the Android monorepo skeleton, core infrastructure modules,
-  event bus, dependency injection wiring, and base navigation graph.
+  Establish the Next.js 16 + TypeScript SDK-First monorepo skeleton.
+  This phase produces the pnpm workspace, Turborepo pipeline, all core
+  packages (@aimeetx/sdk, @aimeetx/ui, @aimeetx/network, @aimeetx/storage,
+  @aimeetx/events, @aimeetx/types, @aimeetx/config), and the apps/web
+  Next.js 16 reference client shell.
   This phase produces zero user-visible features but is the prerequisite
   for every subsequent phase.
 
 steps:
-  - Initialize Android Gradle monorepo with version catalog (libs.versions.toml)
-  - Create :core module with base interfaces (UseCase, Repository, DomainEvent)
-  - Create :core:events module — EventBus interface + InMemoryEventBus implementation
-  - Create :core:network module — Retrofit + OkHttp base factories, interceptors
-  - Create :core:storage module — Room base + EncryptedSharedPreferences wrapper
-  - Create :core:ui module — Design system tokens, shared Compose theme (colors, typography, spacing)
-  - Setup Hilt dependency injection across all modules
-  - Setup Jetpack Navigation (NavHost, NavGraph, typed routes)
-  - Setup Timber logging with debug/release tree configuration
-  - Setup GitHub Actions CI workflow — build, lint, unit test on every PR
-  - Verify build succeeds with zero warnings and all modules resolve correctly
+  - Initialize pnpm workspace (pnpm-workspace.yaml) and root package.json
+  - Initialize Turborepo (turbo.json) with build/lint/test/typecheck pipelines
+  - Create root tsconfig.json with strict mode and project references
+  - Create root .eslintrc.cjs, .prettierrc, .gitignore, .nvmrc (Node 22.x LTS)
+  - Create @aimeetx/types package — shared TypeScript types (Result, IDs, branded types)
+  - Create @aimeetx/events package — RxJS-based typed event bus + base event interfaces
+  - Create @aimeetx/storage package — IndexedDB adapter + secure storage adapter + memory cache
+  - Create @aimeetx/network package — fetch wrapper with interceptors + WebSocket client + LiveKit wrapper
+  - Create @aimeetx/sdk package — Clean Architecture skeleton (domain/data/presentation) + tsyringe DI container + Result wrapper + base use case interface
+  - Create @aimeetx/ui package — design tokens (colors, spacing, typography) + base components (Button, Input, Modal) + theme provider
+  - Create @aimeetx/config package — shared tsconfig/eslint/prettier configs
+  - Create apps/web — Next.js 16 reference client with App Router, root layout, home page, and SDK integration example
+  - Setup tsyringe DI container in @aimeetx/sdk with token symbols and module registration
+  - Setup Vitest configuration across all packages with coverage reporting
+  - Setup GitHub Actions CI workflow — install, lint, typecheck, test, build on every PR
+  - Verify build succeeds with zero warnings and all packages resolve correctly
 
 exit_gates:
-  - All modules compile successfully
-  - Hilt DI graph validates with no missing bindings
-  - InMemoryEventBus subscribe/publish unit test passes
-  - Navigation graph renders with no unresolved destinations
+  - All packages compile successfully (tsc --noEmit passes)
+  - Turborepo pipeline runs end-to-end (build, lint, test, typecheck)
+  - tsyringe DI container resolves all registered tokens
+  - EventBus subscribe/publish unit test passes
+  - Result wrapper type-safety unit test passes
+  - apps/web renders home page with SDK integration example
   - CI pipeline green on first commit
+  - Zero ESLint warnings, zero TypeScript errors
 
 dependencies: []
 
 produces:
-  - :core
-  - :core:events
-  - :core:network
-  - :core:storage
-  - :core:ui
-  - :app (shell only — MainActivity + NavHost)
+  - pnpm-workspace.yaml
+  - turbo.json
+  - root package.json + tsconfig.json + .eslintrc.cjs + .prettierrc
+  - "@aimeetx/types"
+  - "@aimeetx/events"
+  - "@aimeetx/storage"
+  - "@aimeetx/network"
+  - "@aimeetx/sdk (skeleton with Clean Architecture layers)"
+  - "@aimeetx/ui"
+  - "@aimeetx/config"
+  - "apps/web (Next.js 16 shell with SDK integration example)"
+  - .github/workflows/ci.yml

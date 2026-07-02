@@ -1,0 +1,35 @@
+{
+  "name": "@aimeetx/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI MeetX web client — Next.js 16 reference implementation consuming @aimeetx/sdk.",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --turbopack",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "start": "next start",
+    "clean": "rimraf .next .turbo coverage *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@aimeetx/sdk": "workspace:*",
+    "@aimeetx/ui": "workspace:*",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@aimeetx/config": "workspace:*",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "^16.0.0",
+    "happy-dom": "^16.5.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

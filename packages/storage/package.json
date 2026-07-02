@@ -1,0 +1,35 @@
+{
+  "name": "@aimeetx/storage",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Persistence adapters for the AI MeetX platform — IndexedDB, secure storage (Web Crypto), and in-memory cache.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rimraf dist .turbo coverage *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@aimeetx/types": "workspace:*",
+    "idb": "^8.0.1"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.0.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

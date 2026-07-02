@@ -302,33 +302,35 @@ These may be implemented in future versions.
 
 # 12. Technical Vision
 
-**Platform**: Android Native (minimum API 29 / Android 10)
+> **[SUPERSEDED BY ADR-005]** — The original Android-native technical vision has been superseded by the Next.js 16 SDK-First architecture. See `engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md` for the current authoritative technical vision.
 
-**Language**: Kotlin 2.x
+**Platform**: Next.js 16 + TypeScript SDK (consumed by web, desktop, mobile, 3rd-party)
 
-**UI**: Jetpack Compose + Material Design 3
+**Language**: TypeScript 5.x (strict mode)
 
-**Async**: Coroutines + StateFlow
+**UI**: React 19 + Next.js 16 App Router (RSC, Server Actions)
 
-**DI**: Hilt
+**Async**: RxJS + Signals
 
-**Real-Time Media**: LiveKit SFU (WebRTC)
+**DI**: tsyringe
 
-**AI Translation**: Google Gemini Live (`gemini-3.5-live-translate-preview`)
+**Real-Time Media**: LiveKit SFU (WebRTC) — consumed via SDK
 
-**AI Assistant**: Google Gemini API (REST)
+**AI Translation**: Google Gemini Live (`gemini-3.5-live-translate-preview`) — consumed via SDK
+
+**AI Assistant**: Google Gemini API (REST) — consumed via SDK
 
 **Backend Auth & Data**: Firebase Auth + Firestore + Firebase Storage
 
-**Architecture**: Modular Monorepo, Clean Architecture, Event-Driven
+**Architecture**: SDK-First Monorepo (pnpm + Turborepo), Clean Architecture, Event-Driven
 
-**Pattern**: Repository + MVVM
+**Pattern**: Repository + Use Cases + Framework-agnostic state
 
-**Local Storage**: Room (structured) + EncryptedSharedPreferences (secure tokens)
+**Local Storage**: IndexedDB (structured) + Web Crypto API (secure tokens)
 
-**Ephemeral Cache**: Redis (presence, waiting room, feature flags)
+**Ephemeral Cache**: Redis (presence, waiting room, feature flags) — backend-side
 
-**Persistent DB**: PostgreSQL (meeting facts, audit logs, analytics)
+**Persistent DB**: PostgreSQL (meeting facts, audit logs, analytics) — backend-side
 
 **CI/CD**: GitHub Actions → GKE (Google Kubernetes Engine)
 

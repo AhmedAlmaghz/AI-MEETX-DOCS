@@ -1,12 +1,14 @@
 Document ID: TECH-001
 
-Version: 1.0.0
+Version: 2.0.0
 
-Status: Approved
+Status: Approved (with supersession notes)
 
 Owner: Engineering Team
 
 Classification: Mandatory
+
+> **[SUPERSEDED BY ADR-005]** — Sections §3–§5, §6, §7, §8, §9, §17, §18, §19, §20, §30 are superseded by the Next.js 16 SDK-First architecture. The sections below have been updated to reflect the new stack. See `engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md`.
 
 ---
 
@@ -25,8 +27,8 @@ Technology selection is based on the following priorities:
 1. Long-term stability
 2. Official support
 3. Strong community adoption
-4. Kotlin-first ecosystem
-5. Android best practices
+4. TypeScript-first ecosystem
+5. Web platform best practices
 6. Performance
 7. Security
 8. Free or generous free-tier licensing
@@ -36,595 +38,451 @@ Technology selection is based on the following priorities:
 
 # 3. Platform
 
-Target Platform
+> **[UPDATED BY ADR-005]** — Platform is now SDK-first, multi-client.
 
-Android
+**SDK Runtime**: TypeScript 5.x (strict mode) on Node.js 22.x LTS
 
-Minimum SDK
+**Reference Web Client**: Next.js 16 (App Router, React Server Components, Server Actions)
 
-Android 10 (API 29)
+**Future Clients** (post-SDK):
+- Desktop: Tauri 2 (Rust + WebView consuming SDK)
+- Mobile (Android): React Native or native Kotlin consuming SDK
+- Mobile (iOS): React Native or native Swift consuming SDK
+- 3rd-party: Public npm package `@aimeetx/sdk`
 
-Target SDK
+**IDE**: VS Code (Latest Stable) or any TypeScript-capable IDE
 
-Latest Stable Android SDK
-
-Programming Language
-
-Kotlin 2.x
-
-IDE
-
-Android Studio (Latest Stable)
-
-AI Development
-
-Google AI Studio
+**AI Development**: Google AI Studio
 
 ---
 
 # 4. User Interface
 
-Framework
+> **[UPDATED BY ADR-005]** — UI framework is now React + Next.js.
 
-Jetpack Compose
+**Framework**: React 19
 
-Design System
+**Meta-Framework**: Next.js 16 (App Router)
 
-Material Design 3
+**Design System**: Custom design tokens in `@aimeetx/ui` (Material Design 3 inspired, but framework-agnostic)
 
-Navigation
+**Navigation**: Next.js App Router (file-based routing) + typed route helpers
 
-Navigation Compose
+**State Management**: React Server Components + Server Actions + Signals (for client state)
 
-Window Management
+**Image Loading**: `next/image` (built-in)
 
-Jetpack WindowManager
-
-Animations
-
-Compose Animation APIs
-
-Image Loading
-
-Coil
-
-Icons
-
-Material Icons
+**Icons**: Lucide React (tree-shakeable, MIT licensed)
 
 ---
 
 # 5. Architecture
 
-Pattern
+> **[UPDATED BY ADR-005]** — Architecture is now SDK-first Clean Architecture.
 
-Clean Architecture
+**Pattern**: Clean Architecture (applied to TypeScript SDK)
 
-Presentation
+**Presentation**: React components (consume SDK via hooks)
 
-MVVM
+**Business Layer**: Use Cases (in SDK `domain/usecase/`)
 
-Business Layer
+**Data Access**: Repository Pattern (in SDK `data/repository/`)
 
-Use Cases
+**Communication**: Event-Driven (typed event bus in SDK `events/`)
 
-Data Access
-
-Repository Pattern
-
-Communication
-
-Event Driven
-
-Dependency Injection
-
-Hilt
+**Dependency Injection**: tsyringe (Microsoft-maintained, decorator-based)
 
 ---
 
 # 6. Concurrency
 
-Coroutines
+> **[UPDATED BY ADR-005]** — Concurrency is now RxJS + async/await.
 
-Kotlin Coroutines
+**Async**: Native `async/await` + RxJS 7.x for event streams
 
-Reactive Streams
+**Reactive Streams**:
+- RxJS `Observable` for event streams
+- RxJS `BehaviorSubject` for state streams
+- Native `Promise` for one-shot async operations
 
-StateFlow
-
-SharedFlow
-
-Channel (when appropriate)
+**Signals**: `@preact/signals-react` or React 19 `use()` hook for fine-grained reactivity
 
 ---
 
 # 7. Local Storage
 
-Preferences
+> **[UPDATED BY ADR-005]** — Local storage is now IndexedDB + Web Crypto.
 
-Jetpack DataStore
+**Structured Data**: IndexedDB (via `idb` library — typed wrapper)
 
-Structured Data
+**Secure Storage**: Web Crypto API + IndexedDB (encrypted at rest)
 
-Room Database
+**Cache**: In-memory LRU cache + IndexedDB
 
-Secure Storage
-
-EncryptedSharedPreferences
-(AndroidX Security Crypto)
-
-Cache
-
-Room + Memory Cache
-
-Files
-
-Scoped Storage
+**Files**: OPFS (Origin Private File System) for large files
 
 ---
 
 # 8. Networking
 
-HTTP Client
+> **[UPDATED BY ADR-005]** — Networking is now native fetch + WebSocket.
 
-Retrofit
+**HTTP Client**: Native `fetch` API with custom wrapper (interceptors, retry, timeout)
 
-Serialization
+**Serialization**: Zod (runtime validation + TypeScript type inference)
 
-Kotlinx Serialization
+**WebSocket**: Native `WebSocket` API with reconnection logic (exponential backoff)
 
-WebSocket
+**GraphQL** (future): `graphql-request` (lightweight client)
 
-OkHttp WebSocket
-
-Logging
-
-OkHttp Logging Interceptor
-(Debug Only)
+**Logging**: Custom fetch interceptor (debug only)
 
 ---
 
 # 9. Backend
 
-Primary Option
+> **[UNCHANGED]** — Backend services remain as defined in `12_DEPLOYMENT_GUIDE.md`.
 
-Firebase
+**Primary Option**: Firebase
 
-Supported Alternative
+**Supported Alternative**: Supabase
 
-Supabase
+**Authentication**: Firebase Auth
 
-Authentication
+**Database**: Cloud Firestore
 
-Firebase Auth
+**Storage**: Firebase Storage
 
-Database
+**Push Notifications**: Firebase Cloud Messaging (FCM via Web Push API)
 
-Cloud Firestore
+**Analytics**: Firebase Analytics
 
-Storage
+**Crash Reporting**: Sentry (web-compatible, better than Crashlytics for web)
 
-Firebase Storage
-
-Push Notifications
-
-Firebase Cloud Messaging
-
-Analytics
-
-Firebase Analytics
-
-Crash Reporting
-
-Firebase Crashlytics
-
-Remote Config
-
-Firebase Remote Config
+**Remote Config**: Firebase Remote Config
 
 ---
 
 # 10. Authentication
 
-Supported Methods
+> **[UPDATED BY ADR-005]** — Auth methods are now web-compatible.
 
-Email / Password
+**Supported Methods**:
+- Email / Password
+- Google Sign-In (via `google-auth-library` or Firebase Auth)
+- Anonymous Login (Guest Mode)
+- WebAuthn / Passkeys (future)
 
-Google Sign-In
-
-Anonymous Login (Guest Mode)
-
-Future
-
-Apple
-
-Microsoft
-
-GitHub
-
-Magic Link
+**Future**:
+- Apple
+- Microsoft
+- GitHub
+- Magic Link
 
 ---
 
 # 11. Real-Time Communication
 
-Primary Technology
+> **[UNCHANGED]** — WebRTC is platform-agnostic.
 
-WebRTC
+**Primary Technology**: WebRTC
 
-Capabilities
+**Capabilities**:
+- Audio Calls
+- Video Calls
+- Screen Sharing
+- Camera Streaming
+- Microphone Streaming
+- Adaptive Bitrate
+- Echo Cancellation
+- Noise Suppression
 
-Audio Calls
-
-Video Calls
-
-Screen Sharing
-
-Camera Streaming
-
-Microphone Streaming
-
-Adaptive Bitrate
-
-Echo Cancellation
-
-Noise Suppression
+**SDK Wrapper**: `livekit-client` (official LiveKit JS SDK)
 
 ---
 
 # 12. Media Processing
 
-Audio Codec
+> **[UPDATED BY ADR-005]** — Media processing is now Web APIs.
 
-Opus
+**Audio Codec**: Opus (via WebRTC)
 
-Video Codec
+**Video Codec**: VP8 / VP9 / H264 (Browser Dependent)
 
-VP8 / VP9 / H264 (Device Dependent)
+**Image Processing**: Canvas API + OffscreenCanvas
 
-Image Processing
+**Camera/Microphone**: `getUserMedia` API (MediaDevices)
 
-Coil
-
-Camera
-
-CameraX
+**Audio Processing**: Web Audio API (echo cancellation, noise suppression built-in)
 
 ---
 
 # 13. AI Platform
 
-Provider
+> **[UNCHANGED]** — AI provider is still Google Gemini.
 
-Google Gemini API
+**Provider**: Google Gemini API
 
-Models
+**Models**:
+- Gemini Live API
+- Gemini Live Translation (`gemini-3.5-live-translate-preview`)
+- Gemini Flash (General Tasks)
 
-Gemini Live API
+**Capabilities**:
+- Live Translation
+- Meeting Summaries
+- AI Assistant
+- Speech Understanding
+- Content Generation
+- Language Detection
 
-Gemini Live Translation
+**Future**:
+- AI Agents
+- Knowledge Base
 
-Gemini Flash (General Tasks)
-
-Capabilities
-
-Live Translation
-
-Meeting Summaries
-
-AI Assistant
-
-Speech Understanding
-
-Content Generation
-
-Language Detection
-
-Future
-
-AI Agents
-
-Knowledge Base
+**SDK Integration**: Only `@aimeetx/sdk/translation` and `@aimeetx/sdk/ai-assistant` modules may call Gemini APIs.
 
 ---
 
 # 14. Live Translation
 
-Technology
+> **[UNCHANGED]** — Translation engine is still Gemini Live.
 
-Gemini Live Translation
+**Technology**: Gemini Live Translation
 
-Translation Mode
+**Translation Mode**: Streaming
 
-Streaming
+**Supported Streams**:
+- Audio
+- Text
 
-Supported Streams
+**Target Languages**: Dynamic
 
-Audio
+**Translation Type**: Real-Time
 
-Text
+**Per Participant**: Yes
 
-Target Languages
+**Personal Translation**: Yes
 
-Dynamic
+**Original Audio Preservation**: Yes
 
-Translation Type
-
-Real-Time
-
-Per Participant
-
-Yes
-
-Personal Translation
-
-Yes
-
-Original Audio Preservation
-
-Yes
-
-Future
-
-Translated Voice Playback
+**Future**: Translated Voice Playback
 
 ---
 
 # 15. Chat
 
-Transport
+> **[UPDATED BY ADR-005]** — Chat transport is now Firestore + WebSocket.
 
-Realtime
+**Transport**: Firestore real-time listeners + WebSocket fallback
 
-Storage
+**Storage**: Firestore
 
-Firestore
+**Attachments**: Firebase Storage
 
-Attachments
+**Supported Types**:
+- Text
+- Image
+- File
 
-Firebase Storage
-
-Supported Types
-
-Text
-
-Image
-
-File
-
-Future
-
-Voice Message
-
-Video Message
+**Future**:
+- Voice Message
+- Video Message
 
 ---
 
 # 16. Notifications
 
-Firebase Cloud Messaging
+> **[UPDATED BY ADR-005]** — Notifications are now Web Push + in-app.
 
-Local Notifications
+**Push Notifications**: Web Push API (via Firebase Cloud Messaging)
 
-Android Notification Channels
+**In-App Notifications**: Custom toast/snackbar system in `@aimeetx/ui`
 
-Deep Links
-
-Supported
+**Deep Links**: Supported via Next.js routing
 
 ---
 
 # 17. Logging
 
-Library
+> **[UPDATED BY ADR-005]** — Logging is now structured console + Sentry.
 
-Timber
+**Library**: Custom logger (structured JSON output) + `consola` (dev-friendly)
 
-Crash Reporting
+**Crash Reporting**: Sentry (`@sentry/nextjs`)
 
-Crashlytics
+**Performance Monitoring**: Sentry Performance + Web Vitals
 
-Performance Monitoring
+**Log Levels**: debug, info, warn, error
 
-Firebase Performance
+**Sensitive information SHALL NEVER be logged**:
+- Passwords
+- Tokens
+- Emails
+- Private Messages
+- Audio Content
+- Translated Text
 
 ---
 
 # 18. Testing
 
-Unit Testing
+> **[UPDATED BY ADR-005]** — Testing stack is now Vitest + Playwright.
 
-JUnit
+**Unit Testing**: Vitest (fast, ESM-native, Jest-compatible API)
 
-Assertions
+**Assertions**: Vitest built-in (`expect`) + Chai-style BDD
 
-Truth
+**Mocking**: Vitest built-in (`vi.mock`) + MSW (Mock Service Worker) for HTTP
 
-Mocking
+**Component Testing**: React Testing Library + Vitest
 
-MockK
+**E2E Testing**: Playwright (cross-browser, reliable)
 
-Coroutine Testing
+**Coverage**: Vitest coverage (c8 / v8)
 
-kotlinx-coroutines-test
-
-UI Testing
-
-Compose UI Test
-
-Instrumentation
-
-AndroidX Test
-
-Coverage
-
-JaCoCo
+**Property-Based Testing**: `fast-check` (for domain logic)
 
 ---
 
 # 19. Build System
 
-Gradle
+> **[UPDATED BY ADR-005]** — Build system is now pnpm + Turborepo.
 
-Kotlin DSL
+**Package Manager**: pnpm 9.x (fastest, strictest, best workspace support)
 
-Version Catalog
+**Build Orchestration**: Turborepo (incremental builds, remote caching, task pipelines)
 
-libs.versions.toml
+**TypeScript**: TypeScript 5.x with `strict: true`
 
-Dependency Management
+**Bundler (Web)**: Turbopack (Next.js 16 default) + esbuild (for SDK)
 
-Gradle Version Catalog
+**Module Format**: ESM (`"type": "module"`) with dual CJS export for SDK
 
-Build Variants
-
-Debug
-
-Release
-
-Benchmark
+**Build Variants**: development, staging, production
 
 ---
 
 # 20. Code Quality
 
-Static Analysis
+> **[UPDATED BY ADR-005]** — Code quality tools are now ESLint + Prettier + TypeScript.
 
-Detekt
+**Static Analysis**: TypeScript Compiler (`tsc --noEmit`) + ESLint
 
-Formatting
+**Formatting**: Prettier (with `prettier-plugin-tailwindcss` for web)
 
-ktlint
+**Linting**: ESLint 9.x (flat config) + `@typescript-eslint`
 
-Dependency Analysis
+**Dependency Analysis**: `pnpm why` + `depcheck`
 
-Gradle Dependency Analysis Plugin
+**Pre-commit Hooks**: Husky + lint-staged
 
 ---
 
 # 21. Security
 
-TLS
+> **[UPDATED BY ADR-005]** — Security is now Web-standard.
 
-HTTPS Only
+**TLS**: HTTPS Only (HSTS enabled)
 
-Certificate Pinning
+**Certificate Pinning**: Planned (via Service Worker)
 
-Planned
+**Encrypted Storage**: Mandatory (Web Crypto API)
 
-Encrypted Storage
+**Secure Tokens**: Mandatory (HttpOnly cookies for web, secure storage for SDK)
 
-Mandatory
+**CSP**: Content Security Policy enforced
 
-Secure Tokens
+**Subresource Integrity**: SRI for all CDN assets
 
-Mandatory
-
-ProGuard / R8
-
-Enabled
-
-Play Integrity API
-
-Supported
+**Rate Limiting**: Backend-side (Cloudflare / API Gateway)
 
 ---
 
 # 22. Localization
 
-Default Languages
+> **[UNCHANGED]** — Localization requirements are platform-agnostic.
 
-Arabic
+**Default Languages**:
+- Arabic
+- English
 
-English
+**Expandable**: Yes
 
-Expandable
+**RTL Support**: Mandatory
 
-Yes
+**LTR Support**: Mandatory
 
-RTL Support
+**Plural Resources**: Mandatory (via `ICU MessageFormat`)
 
-Mandatory
-
-LTR Support
-
-Mandatory
-
-Plural Resources
-
-Mandatory
+**Library**: `next-intl` (for Next.js) + custom SDK i18n
 
 ---
 
 # 23. Themes
 
-Material 3
+> **[UPDATED BY ADR-005]** — Theming is now CSS variables + design tokens.
 
-Dynamic Colors
+**System**: Custom design tokens in `@aimeetx/ui/tokens`
 
-Supported
+**Dynamic Colors**: Supported (via CSS `prefers-color-scheme`)
 
-Dark Theme
+**Dark Theme**: Supported
 
-Supported
+**Light Theme**: Supported
 
-Light Theme
-
-Supported
-
-Future
-
-Custom Themes
+**Future**: Custom Themes (user-defined)
 
 ---
 
 # 24. Accessibility
 
-TalkBack
+> **[UNCHANGED]** — Accessibility requirements are platform-agnostic.
 
-Supported
+**Screen Readers**: Supported (ARIA labels, semantic HTML)
 
-Dynamic Font Size
+**Dynamic Font Size**: Supported
 
-Supported
+**High Contrast**: Supported
 
-High Contrast
+**Minimum Touch Target**: 44px (web standard, slightly smaller than Android's 48dp)
 
-Supported
-
-Minimum Touch Target
-
-48dp
+**Keyboard Navigation**: Mandatory (full keyboard accessibility)
 
 ---
 
-# 25. CI/CD (Future)
+# 25. CI/CD
 
-GitHub Actions
+> **[UPDATED BY ADR-005]** — CI/CD is now GitHub Actions + Vercel/GKE.
 
-Build Automation
+**CI**: GitHub Actions
 
-Testing
+**Build Automation**: Turborepo remote caching (Vercel)
 
-Lint
+**Testing**: Vitest (unit) + Playwright (E2E)
 
-Release
+**Lint**: ESLint + Prettier + TypeScript
 
-Play Console Deployment
+**Release**: Changesets (semantic versioning for SDK)
 
-Planned
+**Deployment**:
+- Web: Vercel (Next.js 16 optimized) or self-hosted on GKE
+- SDK: npm registry (public)
+- Backend: GKE (unchanged)
 
 ---
 
 # 26. Dependency Rules
 
+> **[UPDATED BY ADR-005]** — Dependency rules apply to npm packages.
+
 Every new dependency SHALL satisfy:
 
 - Open Source or Free Tier
-- Active Maintenance
-- Kotlin Support
-- Android Compatibility
-- Security Review
+- Active Maintenance (last commit within 6 months)
+- TypeScript Support (types included or `@types/*` available)
+- Web Compatibility (or platform-specific with justification)
+- Security Review (no known CVEs)
 - Architecture Approval
 
 Unused dependencies SHALL be removed.
@@ -633,17 +491,16 @@ Unused dependencies SHALL be removed.
 
 # 27. Version Policy
 
+> **[UNCHANGED]** — Version policy is platform-agnostic.
+
 All dependencies SHALL use:
 
-Latest Stable Version
+**Latest Stable Version**
 
 Avoid:
-
-Alpha
-
-Beta
-
-RC
+- Alpha
+- Beta
+- RC
 
 Unless approved through ADR.
 
@@ -651,19 +508,26 @@ Unless approved through ADR.
 
 # 28. Future Technologies
 
+> **[UPDATED BY ADR-005]** — Future tech list updated.
+
 These are explicitly deferred and MUST NOT be introduced in MVP:
 
-- KMP (Kotlin Multiplatform)
 - Wear OS
-- Desktop Client
-- iOS Client
 - AI Offline Models
-- Self-hosted Backend
+- Self-hosted Backend (for MVP)
 - Plugin Marketplace
+
+**Now possible (post-MVP)**:
+- Desktop Client (Tauri 2)
+- iOS Client (React Native or native)
+- Android Client (React Native or native)
+- KMP (no longer needed — SDK is TypeScript)
 
 ---
 
 # 29. Technology Governance
+
+> **[UNCHANGED]** — Governance process is platform-agnostic.
 
 Technology changes require:
 
@@ -677,56 +541,45 @@ Technology changes require:
 
 # 30. Approved Stack Summary
 
-Language
-- Kotlin
+> **[UPDATED BY ADR-005]** — Approved stack is now Next.js 16 + TypeScript SDK.
 
-UI
-- Jetpack Compose
+**Language**: TypeScript 5.x (strict mode)
 
-Architecture
-- Clean Architecture + MVVM
+**UI**: React 19 + Next.js 16
 
-Dependency Injection
-- Hilt
+**Architecture**: Clean Architecture (SDK) + Repository + Use Cases
 
-Networking
-- Retrofit + OkHttp
+**Dependency Injection**: tsyringe
 
-Database
-- Room + Firestore
+**Networking**: Native fetch + WebSocket + Zod
 
-Preferences
-- DataStore
+**Database**: IndexedDB (client) + Firestore (backend)
 
-Authentication
-- Firebase Auth
+**Secure Storage**: Web Crypto API
 
-Storage
-- Firebase Storage
+**Authentication**: Firebase Auth
 
-Realtime Communication
-- WebRTC
+**Storage**: Firebase Storage
 
-Messaging
-- Firestore
+**Realtime Communication**: WebRTC (via LiveKit)
 
-AI
-- Gemini Live API
+**Messaging**: Firestore
 
-Translation
-- Gemini Live Translation
+**AI**: Gemini Live API (via SDK only)
 
-Testing
-- JUnit + MockK + Compose UI Test
+**Translation**: Gemini Live Translation (via SDK only)
 
-Logging
-- Timber
+**Testing**: Vitest + React Testing Library + Playwright
 
-Crash Reporting
-- Crashlytics
+**Logging**: consola + Sentry
 
-Analytics
-- Firebase Analytics
+**Crash Reporting**: Sentry
+
+**Analytics**: Firebase Analytics + PostHog (product analytics)
+
+**Build**: pnpm + Turborepo + Turbopack
+
+**CI/CD**: GitHub Actions + Vercel + Changesets
 
 ---
 
