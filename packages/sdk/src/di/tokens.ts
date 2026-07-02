@@ -19,6 +19,8 @@ export const TOKENS = {
   UserRepository: Symbol.for('@aimeetx/sdk/UserRepository'),
   AuthRepository: Symbol.for('@aimeetx/sdk/AuthRepository'),
   ProfileRepository: Symbol.for('@aimeetx/sdk/ProfileRepository'),
+  MeetingRepository: Symbol.for('@aimeetx/sdk/MeetingRepository'),
+  ParticipantRepository: Symbol.for('@aimeetx/sdk/ParticipantRepository'),
 
   // Use Cases
   GetCurrentUserUseCase: Symbol.for('@aimeetx/sdk/GetCurrentUserUseCase'),
@@ -40,6 +42,21 @@ export const TOKENS = {
   UpdateAccessibilitySettingsUseCase: Symbol.for('@aimeetx/sdk/UpdateAccessibilitySettingsUseCase'),
   UpdatePresenceUseCase: Symbol.for('@aimeetx/sdk/UpdatePresenceUseCase'),
   DeactivateAccountUseCase: Symbol.for('@aimeetx/sdk/DeactivateAccountUseCase'),
+
+  // Meeting Use Cases
+  CreateMeetingUseCase: Symbol.for('@aimeetx/sdk/CreateMeetingUseCase'),
+  GetMeetingUseCase: Symbol.for('@aimeetx/sdk/GetMeetingUseCase'),
+  UpdateMeetingUseCase: Symbol.for('@aimeetx/sdk/UpdateMeetingUseCase'),
+  StartMeetingUseCase: Symbol.for('@aimeetx/sdk/StartMeetingUseCase'),
+  EndMeetingUseCase: Symbol.for('@aimeetx/sdk/EndMeetingUseCase'),
+  JoinMeetingUseCase: Symbol.for('@aimeetx/sdk/JoinMeetingUseCase'),
+  LeaveMeetingUseCase: Symbol.for('@aimeetx/sdk/LeaveMeetingUseCase'),
+  MuteParticipantUseCase: Symbol.for('@aimeetx/sdk/MuteParticipantUseCase'),
+  ChangeParticipantRoleUseCase: Symbol.for('@aimeetx/sdk/ChangeParticipantRoleUseCase'),
+  RaiseHandUseCase: Symbol.for('@aimeetx/sdk/RaiseHandUseCase'),
+  LowerHandUseCase: Symbol.for('@aimeetx/sdk/LowerHandUseCase'),
+  ListParticipantsUseCase: Symbol.for('@aimeetx/sdk/ListParticipantsUseCase'),
+  ListMeetingsUseCase: Symbol.for('@aimeetx/sdk/ListMeetingsUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];
