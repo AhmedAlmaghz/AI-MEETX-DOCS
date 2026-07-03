@@ -220,6 +220,98 @@ export {
   type ListMeetingsCommand,
 } from './domain/usecase/meeting-use-cases.js';
 
+// Admin domain
+export type {
+  TenantId,
+  TenantStatus,
+  AdminRole,
+  AuditLogAction,
+  TenantFeatureFlags,
+  Tenant,
+  TenantMember,
+  AuditLogEntry,
+  AdminActorClaims,
+} from './domain/model/admin.js';
+export {
+  DEFAULT_TENANT_FEATURE_FLAGS,
+  FEATURE_FLAG_CACHE_TTL_MS,
+  canManageTenants,
+  canManageTenantSettings,
+  canInviteTenantMembers,
+  canQueryAuditLogs,
+} from './domain/model/admin.js';
+export type {
+  CreateTenantInput,
+  InviteTenantMemberInput,
+  AuditLogQuery,
+  TenantRepository,
+  AuditLogRepository,
+  FeatureFlagCache,
+} from './domain/port/admin-repository.js';
+export {
+  CreateTenantUseCase,
+  type CreateTenantCommand,
+  SuspendTenantUseCase,
+  type SuspendTenantCommand,
+  UpdateFeatureFlagsUseCase,
+  type UpdateFeatureFlagsCommand,
+  GetTenantFeatureFlagsUseCase,
+  type GetTenantFeatureFlagsCommand,
+  QueryAuditLogUseCase,
+  type QueryAuditLogCommand,
+  InviteTenantMemberUseCase,
+  type InviteTenantMemberCommand,
+} from './domain/usecase/admin-use-cases.js';
+
+// Analytics domain
+export type {
+  AnalyticsTenantId,
+  AnalyticsGranularity,
+  AnalyticsDateRange,
+  MeetingFact,
+  UserEngagementFact,
+  TenantDailySummary,
+  PlatformDailySummary,
+  MeetingAnalyticsPoint,
+  MeetingAnalyticsSummary,
+  PlatformMetricsSummary,
+  AnalyticsActorClaims,
+  MeetingEndedAnalyticsPayload,
+  RecordingReadyAnalyticsPayload,
+  TranslationAnalyticsPayload,
+} from './domain/model/analytics.js';
+export {
+  ANALYTICS_LIMITS,
+  canReadTenantAnalytics,
+  canReadPlatformAnalytics,
+  toUtcDate,
+  calculateDurationMinutes,
+} from './domain/model/analytics.js';
+export type {
+  MeetingFactUpdate,
+  MeetingFactRepository,
+  UserEngagementRepository,
+  AnalyticsSummaryRepository,
+} from './domain/port/analytics-repository.js';
+export {
+  MeetingEndedConsumer,
+  type ConsumeMeetingEndedCommand,
+  RecordingReadyConsumer,
+  type ConsumeRecordingReadyCommand,
+  TranslationConsumer,
+  type ConsumeTranslationCommand,
+  RunAnalyticsAggregationJobUseCase,
+  type RunAnalyticsAggregationCommand,
+  GetMeetingAnalyticsUseCase,
+  type GetMeetingAnalyticsCommand,
+  GetPlatformMetricsUseCase,
+  type GetPlatformMetricsCommand,
+  ExportMeetingReportUseCase,
+  type ExportMeetingReportCommand,
+  AiReportConsumer,
+  type MarkMeetingAiEnabledCommand,
+} from './domain/usecase/analytics-use-cases.js';
+
 // Media domain
 export type {
   // Branded IDs
@@ -765,6 +857,7 @@ export {
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
 export { HttpProfileRepository } from './data/http-profile-repository.js';
+export { InMemoryFeatureFlagCache } from './data/in-memory-feature-flag-cache.js';
 export { WebSecureTokenStorage } from './data/web-secure-token-storage.js';
 
 // DI

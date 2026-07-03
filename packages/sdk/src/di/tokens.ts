@@ -21,6 +21,12 @@ export const TOKENS = {
   ProfileRepository: Symbol.for('@aimeetx/sdk/ProfileRepository'),
   MeetingRepository: Symbol.for('@aimeetx/sdk/MeetingRepository'),
   ParticipantRepository: Symbol.for('@aimeetx/sdk/ParticipantRepository'),
+  TenantRepository: Symbol.for('@aimeetx/sdk/TenantRepository'),
+  AuditLogRepository: Symbol.for('@aimeetx/sdk/AuditLogRepository'),
+  FeatureFlagCache: Symbol.for('@aimeetx/sdk/FeatureFlagCache'),
+  MeetingFactRepository: Symbol.for('@aimeetx/sdk/MeetingFactRepository'),
+  UserEngagementRepository: Symbol.for('@aimeetx/sdk/UserEngagementRepository'),
+  AnalyticsSummaryRepository: Symbol.for('@aimeetx/sdk/AnalyticsSummaryRepository'),
 
   // Use Cases
   GetCurrentUserUseCase: Symbol.for('@aimeetx/sdk/GetCurrentUserUseCase'),
@@ -57,6 +63,24 @@ export const TOKENS = {
   LowerHandUseCase: Symbol.for('@aimeetx/sdk/LowerHandUseCase'),
   ListParticipantsUseCase: Symbol.for('@aimeetx/sdk/ListParticipantsUseCase'),
   ListMeetingsUseCase: Symbol.for('@aimeetx/sdk/ListMeetingsUseCase'),
+
+  // Admin Use Cases
+  CreateTenantUseCase: Symbol.for('@aimeetx/sdk/CreateTenantUseCase'),
+  SuspendTenantUseCase: Symbol.for('@aimeetx/sdk/SuspendTenantUseCase'),
+  UpdateFeatureFlagsUseCase: Symbol.for('@aimeetx/sdk/UpdateFeatureFlagsUseCase'),
+  GetTenantFeatureFlagsUseCase: Symbol.for('@aimeetx/sdk/GetTenantFeatureFlagsUseCase'),
+  QueryAuditLogUseCase: Symbol.for('@aimeetx/sdk/QueryAuditLogUseCase'),
+  InviteTenantMemberUseCase: Symbol.for('@aimeetx/sdk/InviteTenantMemberUseCase'),
+
+  // Analytics Use Cases
+  MeetingEndedConsumer: Symbol.for('@aimeetx/sdk/MeetingEndedConsumer'),
+  RecordingReadyConsumer: Symbol.for('@aimeetx/sdk/RecordingReadyConsumer'),
+  TranslationConsumer: Symbol.for('@aimeetx/sdk/TranslationConsumer'),
+  AiReportConsumer: Symbol.for('@aimeetx/sdk/AiReportConsumer'),
+  RunAnalyticsAggregationJobUseCase: Symbol.for('@aimeetx/sdk/RunAnalyticsAggregationJobUseCase'),
+  GetMeetingAnalyticsUseCase: Symbol.for('@aimeetx/sdk/GetMeetingAnalyticsUseCase'),
+  GetPlatformMetricsUseCase: Symbol.for('@aimeetx/sdk/GetPlatformMetricsUseCase'),
+  ExportMeetingReportUseCase: Symbol.for('@aimeetx/sdk/ExportMeetingReportUseCase'),
 
   // Media Repositories (Ports)
   MediaSessionRepository: Symbol.for('@aimeetx/sdk/MediaSessionRepository'),
