@@ -650,6 +650,118 @@ export {
   type GetMeetingReportCommand,
 } from './domain/usecase/ai-use-cases.js';
 
+// Classroom domain
+export type {
+  // Classroom Types
+  ClassroomStatus,
+  QuizStatus,
+  QuizOption,
+  QuizResponse,
+  ClassroomSession,
+  AttendanceRecord,
+  Quiz,
+  BreakoutRoom,
+  BreakoutRoomConfig,
+  ClassroomError,
+} from './domain/model/classroom.js';
+export { CLASSROOM_CONSTRAINTS } from './domain/model/classroom.js';
+export type {
+  // Classroom Repository Ports
+  CreateClassroomSessionInput,
+  ClassroomSessionUpdate,
+  ClassroomRepository,
+  CreateQuizInput,
+  QuizRepository,
+  CreateAttendanceInput,
+  AttendanceRepository,
+} from './domain/port/classroom-repository.js';
+export type {
+  // Classroom Events
+  ClassroomSessionCreatedEvent,
+  ClassroomSessionEndedEvent,
+  QuizCreatedEvent,
+  QuizActivatedEvent,
+  QuizClosedEvent,
+  QuizResponseSubmittedEvent,
+  BreakoutRoomsCreatedEvent,
+  AttendanceRecordedEvent,
+  ClassroomEvent,
+} from './domain/event/classroom-events.js';
+export {
+  // Classroom Use Cases
+  CreateClassroomSessionUseCase,
+  type CreateClassroomSessionCommand,
+  CreateQuizUseCase,
+  type CreateQuizCommand,
+  ActivateQuizUseCase,
+  type ActivateQuizCommand,
+  CloseQuizUseCase,
+  type CloseQuizCommand,
+  SubmitQuizResponseUseCase,
+  type SubmitQuizResponseCommand,
+  GradeQuizUseCase,
+  type GradeQuizCommand,
+  type QuizGradeResult,
+  CreateBreakoutRoomsUseCase,
+  type CreateBreakoutRoomsCommand,
+  EndClassroomSessionUseCase,
+  type EndClassroomSessionCommand,
+  RecordAttendanceUseCase,
+  type RecordAttendanceCommand,
+  ExportAttendanceReportUseCase,
+  type ExportAttendanceReportCommand,
+  GetClassroomSessionUseCase,
+  type GetClassroomSessionCommand,
+  GetClassroomSessionByMeetingUseCase,
+  type GetClassroomSessionByMeetingCommand,
+  GetQuizUseCase,
+  type GetQuizCommand,
+  GetQuizResultsUseCase,
+  type GetQuizResultsCommand,
+  ListAttendanceRecordsUseCase,
+  type ListAttendanceRecordsCommand,
+} from './domain/usecase/classroom-use-cases.js';
+
+// Whiteboard domain
+export type {
+  // Whiteboard Types
+  WhiteboardPoint,
+  WhiteboardStrokeStyle,
+  WhiteboardOperationType,
+  WhiteboardOperation,
+  WhiteboardStroke,
+  WhiteboardState,
+  WhiteboardError,
+} from './domain/model/whiteboard.js';
+export { WHITEBOARD_CONSTRAINTS } from './domain/model/whiteboard.js';
+export type {
+  // Whiteboard Repository Ports
+  WhiteboardSyncMessage,
+  WhiteboardSyncCallbacks,
+  WhiteboardSyncGateway,
+  WhiteboardRepository,
+} from './domain/port/whiteboard-repository.js';
+export {
+  // Whiteboard Use Cases
+  StartStrokeUseCase,
+  type StartStrokeCommand,
+  MoveStrokeUseCase,
+  type MoveStrokeCommand,
+  EndStrokeUseCase,
+  type EndStrokeCommand,
+  ClearWhiteboardUseCase,
+  type ClearWhiteboardCommand,
+  UndoStrokeUseCase,
+  type UndoStrokeCommand,
+  GetWhiteboardStateUseCase,
+  type GetWhiteboardStateCommand,
+  ConnectWhiteboardUseCase,
+  type ConnectWhiteboardCommand,
+  DisconnectWhiteboardUseCase,
+  SendCursorUpdateUseCase,
+  type SendCursorUpdateCommand,
+} from './domain/usecase/whiteboard-use-cases.js';
+
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
 export { HttpProfileRepository } from './data/http-profile-repository.js';

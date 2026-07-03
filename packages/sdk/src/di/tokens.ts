@@ -130,6 +130,43 @@ export const TOKENS = {
   AskAiQuestionUseCase: Symbol.for('@aimeetx/sdk/AskAiQuestionUseCase'),
   GeneratePostMeetingReportUseCase: Symbol.for('@aimeetx/sdk/GeneratePostMeetingReportUseCase'),
   ProcessTranscriptSegmentUseCase: Symbol.for('@aimeetx/sdk/ProcessTranscriptSegmentUseCase'),
+
+  // Classroom Repositories (Ports)
+  ClassroomRepository: Symbol.for('@aimeetx/sdk/ClassroomRepository'),
+  QuizRepository: Symbol.for('@aimeetx/sdk/QuizRepository'),
+  AttendanceRepository: Symbol.for('@aimeetx/sdk/AttendanceRepository'),
+
+  // Classroom Use Cases
+  CreateClassroomSessionUseCase: Symbol.for('@aimeetx/sdk/CreateClassroomSessionUseCase'),
+  CreateQuizUseCase: Symbol.for('@aimeetx/sdk/CreateQuizUseCase'),
+  ActivateQuizUseCase: Symbol.for('@aimeetx/sdk/ActivateQuizUseCase'),
+  CloseQuizUseCase: Symbol.for('@aimeetx/sdk/CloseQuizUseCase'),
+  SubmitQuizResponseUseCase: Symbol.for('@aimeetx/sdk/SubmitQuizResponseUseCase'),
+  GradeQuizUseCase: Symbol.for('@aimeetx/sdk/GradeQuizUseCase'),
+  CreateBreakoutRoomsUseCase: Symbol.for('@aimeetx/sdk/CreateBreakoutRoomsUseCase'),
+  EndClassroomSessionUseCase: Symbol.for('@aimeetx/sdk/EndClassroomSessionUseCase'),
+  RecordAttendanceUseCase: Symbol.for('@aimeetx/sdk/RecordAttendanceUseCase'),
+  ExportAttendanceReportUseCase: Symbol.for('@aimeetx/sdk/ExportAttendanceReportUseCase'),
+  GetClassroomSessionUseCase: Symbol.for('@aimeetx/sdk/GetClassroomSessionUseCase'),
+  GetClassroomSessionByMeetingUseCase: Symbol.for('@aimeetx/sdk/GetClassroomSessionByMeetingUseCase'),
+  GetQuizUseCase: Symbol.for('@aimeetx/sdk/GetQuizUseCase'),
+  GetQuizResultsUseCase: Symbol.for('@aimeetx/sdk/GetQuizResultsUseCase'),
+  ListAttendanceRecordsUseCase: Symbol.for('@aimeetx/sdk/ListAttendanceRecordsUseCase'),
+
+  // Whiteboard Repositories (Ports)
+  WhiteboardRepository: Symbol.for('@aimeetx/sdk/WhiteboardRepository'),
+  WhiteboardSyncGateway: Symbol.for('@aimeetx/sdk/WhiteboardSyncGateway'),
+
+  // Whiteboard Use Cases
+  StartStrokeUseCase: Symbol.for('@aimeetx/sdk/StartStrokeUseCase'),
+  MoveStrokeUseCase: Symbol.for('@aimeetx/sdk/MoveStrokeUseCase'),
+  EndStrokeUseCase: Symbol.for('@aimeetx/sdk/EndStrokeUseCase'),
+  ClearWhiteboardUseCase: Symbol.for('@aimeetx/sdk/ClearWhiteboardUseCase'),
+  UndoStrokeUseCase: Symbol.for('@aimeetx/sdk/UndoStrokeUseCase'),
+  GetWhiteboardStateUseCase: Symbol.for('@aimeetx/sdk/GetWhiteboardStateUseCase'),
+  ConnectWhiteboardUseCase: Symbol.for('@aimeetx/sdk/ConnectWhiteboardUseCase'),
+  DisconnectWhiteboardUseCase: Symbol.for('@aimeetx/sdk/DisconnectWhiteboardUseCase'),
+  SendCursorUpdateUseCase: Symbol.for('@aimeetx/sdk/SendCursorUpdateUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];

@@ -27,6 +27,10 @@ export type {
   SummaryId,
   ActionItemId,
   ReportId,
+  ClassroomSessionId,
+  QuizId,
+  AttendanceId,
+  BreakoutRoomId,
   IsoDateString,
   Uuid,
 } from './branded.js';

@@ -40,6 +40,12 @@ export type SummaryId = Brand<string, 'SummaryId'>;
 export type ActionItemId = Brand<string, 'ActionItemId'>;
 export type ReportId = Brand<string, 'ReportId'>;
 
+// Classroom domain IDs
+export type ClassroomSessionId = Brand<string, 'ClassroomSessionId'>;
+export type QuizId = Brand<string, 'QuizId'>;
+export type AttendanceId = Brand<string, 'AttendanceId'>;
+export type BreakoutRoomId = Brand<string, 'BreakoutRoomId'>;
+
 /**
  * ISO 8601 timestamp string.
  */
