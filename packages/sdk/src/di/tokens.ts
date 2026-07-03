@@ -191,6 +191,37 @@ export const TOKENS = {
   ConnectWhiteboardUseCase: Symbol.for('@aimeetx/sdk/ConnectWhiteboardUseCase'),
   DisconnectWhiteboardUseCase: Symbol.for('@aimeetx/sdk/DisconnectWhiteboardUseCase'),
   SendCursorUpdateUseCase: Symbol.for('@aimeetx/sdk/SendCursorUpdateUseCase'),
+
+  // Recording Repositories (Ports)
+  RecordingRepository: Symbol.for('@aimeetx/sdk/RecordingRepository'),
+  RecordingGateway: Symbol.for('@aimeetx/sdk/RecordingGateway'),
+  DownloadLinkGenerator: Symbol.for('@aimeetx/sdk/DownloadLinkGenerator'),
+
+  // Recording Use Cases
+  StartRecordingUseCase: Symbol.for('@aimeetx/sdk/StartRecordingUseCase'),
+  StopRecordingUseCase: Symbol.for('@aimeetx/sdk/StopRecordingUseCase'),
+  GetRecordingUseCase: Symbol.for('@aimeetx/sdk/GetRecordingUseCase'),
+  ListRecordingsUseCase: Symbol.for('@aimeetx/sdk/ListRecordingsUseCase'),
+  DeleteRecordingUseCase: Symbol.for('@aimeetx/sdk/DeleteRecordingUseCase'),
+  GetDownloadLinkUseCase: Symbol.for('@aimeetx/sdk/GetDownloadLinkUseCase'),
+  EgressStatusPollingJob: Symbol.for('@aimeetx/sdk/EgressStatusPollingJob'),
+
+  // Notification Repositories (Ports)
+  NotificationRepository: Symbol.for('@aimeetx/sdk/NotificationRepository'),
+  PreferencesRepository: Symbol.for('@aimeetx/sdk/PreferencesRepository'),
+  DeviceTokenRepository: Symbol.for('@aimeetx/sdk/DeviceTokenRepository'),
+  PushGateway: Symbol.for('@aimeetx/sdk/PushGateway'),
+  EmailGateway: Symbol.for('@aimeetx/sdk/EmailGateway'),
+  SmsGateway: Symbol.for('@aimeetx/sdk/SmsGateway'),
+
+  // Notification Use Cases
+  SendNotificationUseCase: Symbol.for('@aimeetx/sdk/SendNotificationUseCase'),
+  MarkReadUseCase: Symbol.for('@aimeetx/sdk/MarkReadUseCase'),
+  ClearNotificationsUseCase: Symbol.for('@aimeetx/sdk/ClearNotificationsUseCase'),
+  GetNotificationHistoryUseCase: Symbol.for('@aimeetx/sdk/GetNotificationHistoryUseCase'),
+  UpdateNotificationPreferencesUseCase: Symbol.for('@aimeetx/sdk/UpdateNotificationPreferencesUseCase'),
+  RegisterDeviceTokenUseCase: Symbol.for('@aimeetx/sdk/RegisterDeviceTokenUseCase'),
+  DeregisterDeviceTokenUseCase: Symbol.for('@aimeetx/sdk/DeregisterDeviceTokenUseCase'),
 } as const;
 
 export type Token = (typeof TOKENS)[keyof typeof TOKENS];

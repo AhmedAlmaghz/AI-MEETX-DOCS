@@ -854,6 +854,92 @@ export {
   type SendCursorUpdateCommand,
 } from './domain/usecase/whiteboard-use-cases.js';
 
+// Recording domain
+export type {
+  RecordingLayout,
+  RecordingStatus,
+  MeetingRecording,
+  EgressFileResult,
+  EgressStatus,
+  PlaybackSession,
+} from './domain/model/recording.js';
+export {
+  RECORDING_CONSTRAINTS,
+  isRecordingActive,
+  isRecordingTerminal,
+  canManageRecording,
+} from './domain/model/recording.js';
+export type {
+  StartRecordingInput,
+  RecordingRepository,
+  RecordingGateway,
+  DownloadLinkGenerator,
+  RecordingActorClaims,
+} from './domain/port/recording-repository.js';
+export type {
+  RecordingStartedEvent,
+  RecordingStoppedEvent,
+  RecordingReadyEvent,
+  RecordingFailedEvent,
+  RecordingEvent,
+} from './domain/event/recording-events.js';
+export {
+  StartRecordingUseCase,
+  type StartRecordingCommand,
+  StopRecordingUseCase,
+  type StopRecordingCommand,
+  GetRecordingUseCase,
+  type GetRecordingCommand,
+  ListRecordingsUseCase,
+  type ListRecordingsCommand,
+  DeleteRecordingUseCase,
+  type DeleteRecordingCommand,
+  GetDownloadLinkUseCase,
+  type GetDownloadLinkCommand,
+  EgressStatusPollingJob,
+  type EgressPollingCommand,
+} from './domain/usecase/recording-use-cases.js';
+
+// Notification domain
+export type {
+  NotificationChannel,
+  NotificationStatus,
+  NotificationType,
+  Notification,
+  UserNotificationPreferences,
+  DevicePlatform,
+  DeviceToken,
+} from './domain/model/notification.js';
+export {
+  NOTIFICATION_CONSTRAINTS,
+  DEFAULT_NOTIFICATION_PREFERENCES,
+  isChannelAllowed,
+} from './domain/model/notification.js';
+export type {
+  NotificationRepository,
+  PreferencesRepository,
+  DeviceTokenRepository,
+  PushGateway,
+  EmailGateway,
+  SmsGateway,
+} from './domain/port/notification-repository.js';
+export {
+  SendNotificationUseCase,
+  type SendNotificationCommand,
+  MarkReadUseCase,
+  type MarkReadCommand,
+  ClearNotificationsUseCase,
+  type ClearNotificationsCommand,
+  GetNotificationHistoryUseCase,
+  type GetNotificationHistoryCommand,
+  UpdateNotificationPreferencesUseCase,
+  type UpdateNotificationPreferencesCommand,
+  RegisterDeviceTokenUseCase,
+  type RegisterDeviceTokenCommand,
+  DeregisterDeviceTokenUseCase,
+  type DeregisterDeviceTokenCommand,
+} from './domain/usecase/notification-use-cases.js';
+
 // Data layer
 export { HttpAuthRepository } from './data/http-auth-repository.js';
 export { HttpProfileRepository } from './data/http-profile-repository.js';
