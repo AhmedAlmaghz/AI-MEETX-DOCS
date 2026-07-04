@@ -14,11 +14,10 @@ import { readProfile, readSession, subscribeProfile, subscribeSession, writeProf
  * navigation between protected routes re-renders correctly.
  */
 export function useSession(): readonly [Session | null, (next: Session | null) => void] {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null>(() => readSession());
 
   useEffect(() => {
     ensureSdkInitialized();
-    setSession(readSession());
     const unsub = subscribeSession(setSession);
     return unsub;
   }, []);
