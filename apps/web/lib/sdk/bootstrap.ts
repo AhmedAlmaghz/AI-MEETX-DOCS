@@ -14,7 +14,7 @@ import 'reflect-metadata';
 
 import { initializeSdk, sdkContainer, TOKENS } from '@aimeetx/sdk';
 
-import { inMemoryRepositories } from './in-memory-repositories.js';
+import { inMemoryRepositories } from './in-memory-repositories';
 
 let initialized = false;
 

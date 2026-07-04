@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback, type FormEvent } from 'react';
 
 import { useTheme, Button, colors, radius, spacing, typography } from '@aimeetx/ui';
-import type { UserId, MeetingId } from '@aimeetx/types';
 import type { Meeting } from '@aimeetx/sdk';
 
 import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';

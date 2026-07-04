@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 
 import { useTheme, colors, radius, spacing, typography } from '@aimeetx/ui';
-import type { UserId } from '@aimeetx/types';
 import type { Meeting, MeetingFact, PlatformMetricsSummary } from '@aimeetx/sdk';
 
 import { ensureSdkInitialized } from '@/lib/sdk/bootstrap';

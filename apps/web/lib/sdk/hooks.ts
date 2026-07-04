@@ -6,8 +6,8 @@ import type { Session, UserProfile } from '@aimeetx/sdk';
 
 import { sdkContainer, TOKENS } from '@aimeetx/sdk';
 
-import { ensureSdkInitialized, resolveUseCase } from './bootstrap.js';
-import { readProfile, readSession, subscribeProfile, subscribeSession, writeProfile } from './session-store.js';
+import { ensureSdkInitialized, resolveUseCase } from './bootstrap';
+import { readProfile, readSession, subscribeProfile, subscribeSession, writeProfile } from './session-store';
 
 /**
  * Returns the current session and a setter. Subscribes to changes so

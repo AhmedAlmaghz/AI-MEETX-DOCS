@@ -5,9 +5,9 @@ import { useEffect, useState, useCallback, type FormEvent } from 'react';
 
 import { useTheme, Button, colors, radius, spacing, typography } from '@aimeetx/ui';
 import type { Meeting, Participant } from '@aimeetx/sdk';
-import type { ParticipantId, ConversationId } from '@aimeetx/types';
+import type { MeetingId, ParticipantId, ConversationId } from '@aimeetx/types';
 
-import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';
+import { resolveUseCase } from '@/lib/sdk/bootstrap';
 import { useSession } from '@/lib/sdk/hooks';
 import { TOKENS } from '@aimeetx/sdk';
 

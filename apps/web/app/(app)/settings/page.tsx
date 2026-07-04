@@ -9,8 +9,8 @@ import type {
   Presence,
   PrivacySettings,
   Theme,
+  UserProfile,
 } from '@aimeetx/sdk';
-import type { UserId } from '@aimeetx/types';
 
 import { useCurrentProfile, useSession } from '@/lib/sdk/hooks';
 import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';

@@ -4,11 +4,10 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 
 import { useTheme, Button, Input, colors, radius, spacing, typography } from '@aimeetx/ui';
 
-import { useCurrentProfile } from '@/lib/sdk/hooks';
+import { useCurrentProfile, useSession } from '@/lib/sdk/hooks';
 import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';
 import { TOKENS } from '@aimeetx/sdk';
 import type { Theme } from '@aimeetx/sdk';
-import type { UserId } from '@aimeetx/types';
 
 type Palette = {
   readonly background: string;
