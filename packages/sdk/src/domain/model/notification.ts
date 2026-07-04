@@ -72,8 +72,8 @@ export function isChannelAllowed(
   preferences: UserNotificationPreferences | null,
 ): boolean {
   if (!preferences) {
-    return (DEFAULT_NOTIFICATION_PREFERENCES[type] as ReadonlyArray<NotificationChannel>).includes(channel);
+    return (DEFAULT_NOTIFICATION_PREFERENCES[type]).includes(channel);
   }
   const allowed = preferences.preferences[type];
-  return allowed !== undefined && (allowed as ReadonlyArray<NotificationChannel>).includes(channel);
+  return allowed !== undefined && (allowed).includes(channel);
 }

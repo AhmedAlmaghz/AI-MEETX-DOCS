@@ -33,7 +33,7 @@ export class IndexedDBKeyValueStore implements KeyValueStore {
   async get<T>(key: string): Promise<Result<T | null, StorageError>> {
     try {
       const db = await this.dbPromise;
-      const value = await db.get(this.storeName, key);
+      const value: unknown = await db.get(this.storeName, key);
       return success((value as T | undefined) ?? null);
     } catch (cause) {
       return failure({
@@ -82,7 +82,7 @@ export class IndexedDBKeyValueStore implements KeyValueStore {
   async has(key: string): Promise<Result<boolean, StorageError>> {
     try {
       const db = await this.dbPromise;
-      const value = await db.get(this.storeName, key);
+      const value: unknown = await db.get(this.storeName, key);
       return success(value !== undefined);
     } catch (cause) {
       return failure({

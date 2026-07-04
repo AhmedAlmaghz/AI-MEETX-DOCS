@@ -30,7 +30,7 @@ describe('InMemoryEventBus', () => {
     bus.dispose();
   });
 
-  it('filters events by type', async () => {
+  it('filters events by type', () => {
     const bus = new InMemoryEventBus();
     const handler = vi.fn();
 

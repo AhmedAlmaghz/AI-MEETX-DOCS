@@ -15,9 +15,10 @@ reading_protocol:
   step_1_governance:
     - 00-governance/PROJECT_CONSTITUTION.md
     - 00-governance/ADR/ADR-001-GEMINI-LIVE-TRANSLATE.md
-    - 00-governance/ADR/ADR-002-MODULAR-MONOREPO.md
     - 00-governance/ADR/ADR-003-REDIS-FIRST-STORAGE.md
     - 00-governance/ADR/ADR-004-CLEAN-ARCHITECTURE-ISOLATION.md
+    - 00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md
+    - note: ADR-002-MODULAR-MONOREPO is SUPERSEDED by ADR-005 (do not use)
 
   step_2_product:
     - 01_PROJECT_VISION.md

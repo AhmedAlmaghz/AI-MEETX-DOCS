@@ -1,10 +1,10 @@
 project:
   name: AI Meeting Platform (AI MeetX)
-  version: 1.0.0
+  version: 2.0.0
   description: >
     Enterprise-grade real-time meeting platform with AI-powered live translation,
     classroom tools, multi-tenant administration, and analytics.
-    Built as a modular Android monorepo with event-driven architecture.
+    Built as a Next.js 16 + TypeScript SDK-First monorepo per ADR-005.
 
 # ─── Governance ───────────────────────────────────────────────────────────────
 governance:
@@ -14,9 +14,11 @@ governance:
     path: 00-governance/ADR/
     files:
       - ADR-001-GEMINI-LIVE-TRANSLATE.md
-      - ADR-002-MODULAR-MONOREPO.md
       - ADR-003-REDIS-FIRST-STORAGE.md
       - ADR-004-CLEAN-ARCHITECTURE-ISOLATION.md
+      - ADR-005-NEXTJS-SDK-FIRST.md
+    notes:
+      - ADR-002-MODULAR-MONOREPO.md is SUPERSEDED by ADR-005 (historical context only)
 
 # ─── Product ──────────────────────────────────────────────────────────────────
 product:
@@ -27,6 +29,9 @@ product:
 architecture:
   rules:
     path: 02-architecture/04_ARCHITECTURE_RULES.md
+  decisions:
+    current: ADR-005-NEXTJS-SDK-FIRST
+    sdk: "@aimeetx/sdk is the single source of truth for all business logic"
 
 # ─── Engineering Guides ───────────────────────────────────────────────────────
 engineering:
@@ -63,9 +68,9 @@ features:
 phases:
   base: phases/
   files:
-    - phase-0.yaml    # Foundation & Monorepo Setup
-    - phase-1.yaml    # Authentication & Identity (rewritten)
-    - phase-2.yaml    # Authentication & Identity
+    - phase-0.yaml    # Foundation & SDK Monorepo Setup
+    - phase-1.yaml    # Authentication & Identity
+    - phase-2.yaml    # Profile & Account Management
     - phase-3.yaml    # Meeting Platform
     - phase-4.yaml    # Media Engine
     - phase-5.yaml    # Collaboration Platform

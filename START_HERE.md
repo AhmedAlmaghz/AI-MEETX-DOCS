@@ -36,9 +36,9 @@ Every AI agent and human engineer MUST read documents in this exact order
 |------|---------|
 | `engineering/00-governance/PROJECT_CONSTITUTION.md` | Immutable engineering principles |
 | `engineering/00-governance/ADR/ADR-001-GEMINI-LIVE-TRANSLATE.md` | AI translation architecture decision |
-| `engineering/00-governance/ADR/ADR-002-MODULAR-MONOREPO.md` | Monorepo architecture decision |
 | `engineering/00-governance/ADR/ADR-003-REDIS-FIRST-STORAGE.md` | Ephemeral storage decision |
 | `engineering/00-governance/ADR/ADR-004-CLEAN-ARCHITECTURE-ISOLATION.md` | Layer isolation decision |
+| `engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md` | Current architecture (Next.js 16 + TS SDK-First; supersedes ADR-002) |
 
 ## Step 2 — Product
 
@@ -83,28 +83,40 @@ Read only the feature documentation listed in that phase's `produces` key.
 
 ---
 
-# 🏛 Architecture at a Glance
+# 🏛 Architecture at a Glance (per ADR-005)
 
 ```
-:app                         ← Shell (MainActivity, NavHost)
-:core                        ← Base interfaces, DI setup
-:core:events                 ← EventBus (domain event backbone)
-:core:network                ← Retrofit + OkHttp factories
-:core:storage                ← Room + EncryptedSharedPreferences
-:core:ui                     ← Design system tokens + Compose theme
-
-:feature-auth                ← Authentication & session management
-:feature-profile             ← User profile & preferences
-:feature-meeting             ← Meeting lifecycle (9 subdomains)
-:feature-media               ← Audio/video/screen (8 subdomains)
-:feature-chat                ← In-meeting chat & file sharing
-:feature-translation         ← Gemini Live real-time translation
-:feature-ai                  ← AI assistant (summary, Q&A, actions)
-:feature-recording           ← Meeting recording & playback
-:feature-notification        ← Push & in-app notifications
-:feature-classroom           ← Quiz, attendance, breakout rooms
-:feature-admin               ← Multi-tenant administration
-:feature-analytics           ← Usage analytics & reporting
+┌──────────────────────────────────────────────────────────────────────┐
+│                     CLIENT APPLICATIONS                                │
+│                                                                       │
+│   apps/web (Next.js 16)         Desktop (Tauri 2)                    │
+│   Mobile (RN / Kotlin)          3rd-party npm consumers               │
+└─────────────────────────────┬────────────────────────────────────────┘
+                              │ consumes
+                              ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                    @aimeetx/sdk — Single source of truth                │
+│                                                                       │
+│   domain/           ← Pure TypeScript (no React, Next, Node)          │
+│   ├── model/        ← Domain entities & value objects                 │
+│   ├── port/         ← Repository contracts (interfaces)              │
+│   ├── usecase/      ← Single-responsibility use cases                 │
+│   └── event/        ← Typed domain events                            │
+│                                                                       │
+│   data/             ← HTTP/WS/IndexedDB implementations               │
+│   presentation/     ← Framework-agnostic signals & event store        │
+│   events/           ← Re-export of @aimeetx/events (RxJS bus)        │
+│   translation/      ← ONLY module calling Gemini for translation      │
+│   ai-assistant/     ← ONLY module calling Gemini for AI features       │
+│   di/               ← tsyringe container & tokens                     │
+└────────────────┬────────────────┬──────────────────┬───────────────────┘
+                 │                │                  │
+                 ▼                ▼                  ▼
+        @aimeetx/ui      @aimeetx/network     @aimeetx/storage
+        (design system)  (HTTP + WebSocket)   (IndexedDB + secure)
+                                 │
+                                 ▼
+                       Backend (LiveKit, Gemini, Firebase, Postgres, Redis)
 ```
 
 ---

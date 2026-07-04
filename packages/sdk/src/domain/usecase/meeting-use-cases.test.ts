@@ -9,7 +9,6 @@ import { InMemoryEventBus } from '@aimeetx/events';
 import type {
   Meeting,
   Participant,
-  ParticipantRole,
 } from '../model/meeting.js';
 import { DEFAULT_MEETING_SETTINGS } from '../model/meeting.js';
 import type {
@@ -22,7 +21,6 @@ import {
   StartMeetingUseCase,
   EndMeetingUseCase,
   JoinMeetingUseCase,
-  LeaveMeetingUseCase,
   MuteParticipantUseCase,
   RaiseHandUseCase,
   ListParticipantsUseCase,
@@ -653,7 +651,7 @@ describe('MuteParticipantUseCase', () => {
     const targetParticipant = createMockParticipant({ id: 'participant_target' as ParticipantId, isMuted: false });
     const hostParticipant = createMockParticipant({
       id: 'participant_host' as ParticipantId,
-      role: 'host' as ParticipantRole,
+      role: 'host',
     });
     const mutedParticipant = createMockParticipant({ id: 'participant_target' as ParticipantId, isMuted: true });
 
@@ -682,7 +680,7 @@ describe('MuteParticipantUseCase', () => {
     const targetParticipant = createMockParticipant({ id: 'participant_target' as ParticipantId });
     const attendeeParticipant = createMockParticipant({
       id: 'participant_attendee' as ParticipantId,
-      role: 'attendee' as ParticipantRole,
+      role: 'attendee',
     });
 
     vi.mocked(participantRepository.getParticipant)

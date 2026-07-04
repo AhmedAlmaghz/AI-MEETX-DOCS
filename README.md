@@ -4,7 +4,7 @@
 
 ## Architecture
 
-This repository implements the **Next.js 16 SDK-First** architecture defined in [`engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md`](engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md).
+This repository implements the **Next.js 16 SDK-First** architecture defined in [`engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md`](engineering/00-governance/ADR/ADR-005-NEXTJS-SDK-FIRST.md). Per the constitution, `@aimeetx/sdk` is the single source of truth for all business logic, with web/desktop/mobile/3rd-party clients as thin presentation layers.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

@@ -3,17 +3,13 @@ import 'reflect-metadata';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { IsoDateString, NotificationId, Uuid, UserId } from '@aimeetx/types';
-import { failure, success } from '@aimeetx/types';
+import { success } from '@aimeetx/types';
 
 import type {
-  DevicePlatform,
   DeviceToken,
   Notification,
-  NotificationChannel,
-  NotificationType,
   UserNotificationPreferences,
 } from '../model/notification.js';
-import { NOTIFICATION_CONSTRAINTS } from '../model/notification.js';
 import type {
   DeviceTokenRepository,
   EmailGateway,
@@ -307,12 +303,10 @@ describe('Phase 10 notification preference filtering', () => {
 describe('Phase 10 notification history and management', () => {
   let notificationRepository: NotificationRepository;
   let preferencesRepository: PreferencesRepository;
-  let deviceTokenRepository: DeviceTokenRepository;
 
   beforeEach(() => {
     notificationRepository = createNotificationRepository();
     preferencesRepository = createPreferencesRepository();
-    deviceTokenRepository = createDeviceTokenRepository();
   });
 
   it('marks a notification as read', async () => {

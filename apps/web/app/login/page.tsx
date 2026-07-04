@@ -1,56 +1,43 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-import {
-  HttpAuthRepository,
-  LoginAsGuestUseCase,
-  LoginWithEmailUseCase,
-  WebSecureTokenStorage,
-  initializeSdk,
-  sdkContainer,
-  TOKENS,
-} from '@aimeetx/sdk';
 import { Button, Input, colors, radius, spacing, typography } from '@aimeetx/ui';
+import type { AuthCredentials } from '@aimeetx/sdk';
 
-/**
- * Login page — email/password login + guest access.
- *
- * Per ADR-005: this is a client component that uses the SDK use cases.
- * Per `02_PRODUCT_REQUIREMENTS.md`: guest access is supported.
- */
+import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';
+import { writeSession } from '@/lib/sdk/session-store';
+import { TOKENS } from '@aimeetx/sdk';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  ensureSdkInitialized();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
     try {
-      // Initialize SDK with auth bindings
-      initializeSdk({ apiBaseUrl: 'https://api.aimeetx.com' });
-
-      // Bind auth dependencies
-      const httpClient = sdkContainer.resolve<import('@aimeetx/network').HttpClient>(TOKENS.HttpClient);
-      sdkContainer.registerInstance(TOKENS.AuthRepository, new HttpAuthRepository(httpClient, 'https://api.aimeetx.com'));
-      sdkContainer.registerInstance(TOKENS.SecureTokenStorage, new WebSecureTokenStorage());
-      sdkContainer.register(TOKENS.LoginWithEmailUseCase, { useClass: LoginWithEmailUseCase });
-
-      const useCase = sdkContainer.resolve<LoginWithEmailUseCase>(TOKENS.LoginWithEmailUseCase);
-      const result = await useCase.execute({ email, password });
-
+      const credentials: AuthCredentials = {
+        email,
+        password,
+      };
+      const result = await resolveUseCase<
+        InstanceType<typeof import('@aimeetx/sdk').LoginWithEmailUseCase>
+      >(TOKENS.LoginWithEmailUseCase).execute(credentials);
       if (result.isFailure) {
         setError(result.error.message);
-      } else {
-        // Redirect to home on success
-        window.location.href = '/';
+        return;
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      writeSession(result.value);
+      router.push('/dashboard');
     } finally {
       setLoading(false);
     }
@@ -59,25 +46,16 @@ export default function LoginPage() {
   const handleGuestLogin = async () => {
     setError(null);
     setLoading(true);
-
     try {
-      initializeSdk({ apiBaseUrl: 'https://api.aimeetx.com' });
-
-      const httpClient = sdkContainer.resolve<import('@aimeetx/network').HttpClient>(TOKENS.HttpClient);
-      sdkContainer.registerInstance(TOKENS.AuthRepository, new HttpAuthRepository(httpClient, 'https://api.aimeetx.com'));
-      sdkContainer.registerInstance(TOKENS.SecureTokenStorage, new WebSecureTokenStorage());
-      sdkContainer.register(TOKENS.LoginAsGuestUseCase, { useClass: LoginAsGuestUseCase });
-
-      const useCase = sdkContainer.resolve<LoginAsGuestUseCase>(TOKENS.LoginAsGuestUseCase);
-      const result = await useCase.execute(undefined);
-
+      const result = await resolveUseCase<
+        InstanceType<typeof import('@aimeetx/sdk').LoginAsGuestUseCase>
+      >(TOKENS.LoginAsGuestUseCase).execute(undefined);
       if (result.isFailure) {
         setError(result.error.message);
-      } else {
-        window.location.href = '/';
+        return;
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Guest login failed');
+      writeSession(result.value);
+      router.push('/dashboard');
     } finally {
       setLoading(false);
     }
@@ -98,12 +76,12 @@ export default function LoginPage() {
       <div
         style={{
           width: '100%',
-          maxWidth: '400px',
+          maxWidth: 400,
           padding: spacing.xl,
           backgroundColor: colors.light.surface,
           border: `1px solid ${colors.light.border}`,
           borderRadius: radius.lg,
-          boxShadow: shadow,
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         }}
       >
         <h1
@@ -126,7 +104,10 @@ export default function LoginPage() {
           Sign in to your AI MeetX account
         </p>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+        <form
+          onSubmit={(e) => void handleLogin(e)}
+          style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}
+        >
           <Input
             label="Email"
             type="email"
@@ -173,9 +154,9 @@ export default function LoginPage() {
               margin: `${spacing.md} 0`,
             }}
           >
-            <div style={{ flex: 1, height: '1px', backgroundColor: colors.light.border }} />
+            <div style={{ flex: 1, height: 1, backgroundColor: colors.light.border }} />
             <span style={{ fontSize: typography.fontSize.sm, color: colors.light.textSecondary }}>or</span>
-            <div style={{ flex: 1, height: '1px', backgroundColor: colors.light.border }} />
+            <div style={{ flex: 1, height: 1, backgroundColor: colors.light.border }} />
           </div>
 
           <Button
@@ -184,7 +165,7 @@ export default function LoginPage() {
             size="lg"
             fullWidth
             disabled={loading}
-            onClick={handleGuestLogin}
+            onClick={() => void handleGuestLogin()}
           >
             Continue as guest
           </Button>
@@ -198,14 +179,12 @@ export default function LoginPage() {
             textAlign: 'center',
           }}
         >
-          Don't have an account?{' '}
-          <a href="/register" style={{ color: colors.brand.primary, textDecoration: 'none' }}>
+          Don&apos;t have an account?{' '}
+          <Link href="/register" style={{ color: colors.brand.primary, textDecoration: 'none' }}>
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </main>
   );
 }
-
-const shadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';

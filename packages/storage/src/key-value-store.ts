@@ -36,44 +36,44 @@ export type StorageError =
 export class InMemoryKeyValueStore implements KeyValueStore {
   private readonly store = new Map<string, string>();
 
-  async get<T>(key: string): Promise<Result<T | null, StorageError>> {
+  get<T>(key: string): Promise<Result<T | null, StorageError>> {
     const raw = this.store.get(key);
-    if (raw === undefined) return success(null);
+    if (raw === undefined) return Promise.resolve(success(null));
     try {
-      return success(JSON.parse(raw) as T);
+      return Promise.resolve(success(JSON.parse(raw) as T));
     } catch (cause) {
-      return failure({
+      return Promise.resolve(failure({
         code: 'SerializationError',
         message: `Failed to deserialize value for key "${key}"`,
         cause,
-      });
+      }));
     }
   }
 
-  async set<T>(key: string, value: T): Promise<Result<void, StorageError>> {
+  set<T>(key: string, value: T): Promise<Result<void, StorageError>> {
     try {
       this.store.set(key, JSON.stringify(value));
-      return success(undefined);
+      return Promise.resolve(success(undefined));
     } catch (cause) {
-      return failure({
+      return Promise.resolve(failure({
         code: 'SerializationError',
         message: `Failed to serialize value for key "${key}"`,
         cause,
-      });
+      }));
     }
   }
 
-  async delete(key: string): Promise<Result<void, StorageError>> {
+  delete(key: string): Promise<Result<void, StorageError>> {
     this.store.delete(key);
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
-  async has(key: string): Promise<Result<boolean, StorageError>> {
-    return success(this.store.has(key));
+  has(key: string): Promise<Result<boolean, StorageError>> {
+    return Promise.resolve(success(this.store.has(key)));
   }
 
-  async clear(): Promise<Result<void, StorageError>> {
+  clear(): Promise<Result<void, StorageError>> {
     this.store.clear();
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 }

@@ -1,8 +1,6 @@
-import type { IsoDateString, MeetingId, OrganizationId, UserId } from '@aimeetx/types';
+import type { IsoDateString, MeetingId, UserId } from '@aimeetx/types';
 
-import type { TenantId } from './admin.js';
-
-export type AnalyticsTenantId = TenantId | OrganizationId;
+export type AnalyticsTenantId = import('@aimeetx/types').OrganizationId;
 
 export type AnalyticsGranularity = 'daily' | 'weekly' | 'monthly';
 

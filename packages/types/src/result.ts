@@ -59,7 +59,7 @@ export const map = <T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<
   if (isSuccess(result)) {
     return success(fn(result.value));
   }
-  return result as Result<U, E>;
+  return { isSuccess: false, isFailure: true, error: result.error };
 };
 
 /**
@@ -69,7 +69,7 @@ export const mapError = <T, E, F>(result: Result<T, E>, fn: (error: E) => F): Re
   if (isFailure(result)) {
     return failure(fn(result.error));
   }
-  return result as Result<T, F>;
+  return { isSuccess: true, isFailure: false, value: result.value };
 };
 
 /**
@@ -78,7 +78,7 @@ export const mapError = <T, E, F>(result: Result<T, E>, fn: (error: E) => F): Re
 export const flatMap = <T, U, E>(
   result: Result<T, E>,
   fn: (value: T) => Result<U, E>,
-): Result<U, E> => (isSuccess(result) ? fn(result.value) : (result as Result<U, E>));
+): Result<U, E> => (isSuccess(result) ? fn(result.value) : { isSuccess: false, isFailure: true, error: result.error });
 
 /**
  * Unwraps a Result, throwing the error if failed.
@@ -86,6 +86,9 @@ export const flatMap = <T, U, E>(
  */
 export const unwrap = <T, E>(result: Result<T, E>): T => {
   if (isSuccess(result)) return result.value;
-  if (isFailure(result)) throw result.error;
+  if (isFailure(result)) {
+    if (result.error instanceof Error) throw result.error;
+    throw new Error(String(result.error));
+  }
   throw new Error('Unreachable: Result is neither success nor failure');
 };

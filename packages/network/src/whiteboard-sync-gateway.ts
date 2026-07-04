@@ -148,13 +148,13 @@ export class WebSocketWhiteboardSyncGateway {
   /**
    * Connect to whiteboard sync channel.
    */
-  async connect(
+  connect(
     sessionId: ClassroomSessionId,
     participantId: ParticipantId,
     callbacks: WhiteboardSyncCallbacks,
   ): Promise<Result<void, Error>> {
     if (this.connected) {
-      return failure(new Error('Already connected'));
+      return Promise.resolve(failure(new Error('Already connected')));
     }
 
     this.sessionId = sessionId;
@@ -185,15 +185,15 @@ export class WebSocketWhiteboardSyncGateway {
 
     this.client.connect();
 
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
   /**
    * Disconnect from whiteboard sync channel.
    */
-  async disconnect(): Promise<Result<void, Error>> {
+  disconnect(): Promise<Result<void, Error>> {
     if (!this.connected || !this.client) {
-      return success(undefined);
+      return Promise.resolve(success(undefined));
     }
 
     // Send leave message
@@ -214,15 +214,15 @@ export class WebSocketWhiteboardSyncGateway {
     this.participantId = null;
     this.connected = false;
 
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
   /**
    * Send a drawing operation to all participants.
    */
-  async sendOperation(operation: WhiteboardOperation): Promise<Result<void, Error>> {
+  sendOperation(operation: WhiteboardOperation): Promise<Result<void, Error>> {
     if (!this.connected || !this.client) {
-      return failure(new Error('Not connected'));
+      return Promise.resolve(failure(new Error('Not connected')));
     }
 
     const message: WhiteboardSyncMessage = {
@@ -234,15 +234,15 @@ export class WebSocketWhiteboardSyncGateway {
     };
 
     this.client.send(JSON.stringify(message));
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
   /**
    * Request full state sync from server.
    */
-  async requestStateSync(): Promise<Result<void, Error>> {
+  requestStateSync(): Promise<Result<void, Error>> {
     if (!this.connected || !this.client) {
-      return failure(new Error('Not connected'));
+      return Promise.resolve(failure(new Error('Not connected')));
     }
 
     const message = {
@@ -253,15 +253,15 @@ export class WebSocketWhiteboardSyncGateway {
     };
 
     this.client.send(JSON.stringify(message));
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
   /**
    * Send cursor position update.
    */
-  async sendCursorUpdate(x: number, y: number): Promise<Result<void, Error>> {
+  sendCursorUpdate(x: number, y: number): Promise<Result<void, Error>> {
     if (!this.connected || !this.client || !this.sessionId || !this.participantId) {
-      return failure(new Error('Not connected'));
+      return Promise.resolve(failure(new Error('Not connected')));
     }
 
     const message: WhiteboardSyncMessage = {
@@ -273,7 +273,7 @@ export class WebSocketWhiteboardSyncGateway {
     };
 
     this.client.send(JSON.stringify(message));
-    return success(undefined);
+    return Promise.resolve(success(undefined));
   }
 
   /**

@@ -668,7 +668,7 @@ export class SelectDeviceUseCase
     }
     if (currentSelected.value && currentSelected.value.id !== deviceId) {
       await this.mediaDeviceRepository.deselectDevice(
-        currentSelected.value.id as import('../model/media.js').MediaDeviceId,
+        currentSelected.value.id,
       );
     }
 

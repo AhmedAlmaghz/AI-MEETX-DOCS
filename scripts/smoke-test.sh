@@ -42,9 +42,9 @@ check "Register page" "${BASE_URL}/register" "200"
 echo ""
 
 echo "Security Headers:"
-headers=$(curl -sI "${BASE_URL}/" || echo "")
+headers=$(curl -s -D - -o /dev/null "${BASE_URL}/" || echo "")
 for header in "x-content-type-options: nosniff" "x-frame-options: DENY" "strict-transport-security"; do
-  if echo "${headers}" | grep -qi "${header}"; then
+  if echo "${headers}" | grep -qi "^${header}"; then
     echo "  PASS  ${header}"
     PASSED=$((PASSED + 1))
   else

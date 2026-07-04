@@ -4,9 +4,13 @@ Document ID: ADR-002
 
 Version: 1.0.0
 
-Status: Accepted
+Status: **[SUPERSEDED BY ADR-005]** (2026-02-07)
 
 Date: 2025-01-16
+
+> **This ADR is kept for historical context only.** The current monorepo architecture
+> is a Next.js 16 + TypeScript SDK-First monorepo defined in
+> [`ADR-005-NEXTJS-SDK-FIRST.md`](./ADR-005-NEXTJS-SDK-FIRST.md).
 
 Deciders: Chief Architect, Engineering Lead, Mobile Lead
 

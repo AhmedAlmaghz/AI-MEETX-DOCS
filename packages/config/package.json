@@ -21,12 +21,11 @@
     "dev": "tsc -p tsconfig.json --watch",
     "lint": "eslint src --max-warnings 0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
+    "test": "echo \"Config package has no runtime tests\" && exit 0",
     "clean": "rimraf dist .turbo *.tsbuildinfo"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.7.3",
-    "vitest": "^2.1.8"
+    "typescript": "^5.7.3"
   }
 }

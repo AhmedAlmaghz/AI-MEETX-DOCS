@@ -946,6 +946,37 @@ export { HttpProfileRepository } from './data/http-profile-repository.js';
 export { InMemoryFeatureFlagCache } from './data/in-memory-feature-flag-cache.js';
 export { WebSecureTokenStorage } from './data/web-secure-token-storage.js';
 
+// ─── ADR-005 Structural Modules ──────────────────────────────────────────────
+// Re-export under the ADR-005 mandated module paths so consumers
+// can use either flat exports or the structural namespace.
+
+export {
+  // presentation/ — framework-agnostic state primitives
+  createSignal,
+  createComputed,
+  createEventStore,
+  type Signal,
+  type ReadonlySignal,
+  type EventStore,
+  type EventSubject,
+} from './presentation/index.js';
+
+// events/ — re-exports of the typed event bus
+export type { SdkEvent } from './events/index.js';
+export { InMemoryEventBus } from './events/index.js';
+
+// translation/ — Gemini Live Translate module (ONLY place in SDK calling Gemini for translation)
+// Per ADR-005, the translation module exposes its own entry point at
+// './translation/index.js'. All items (constants, use cases, types) are
+// re-exported at the top of this file for backward compatibility — no
+// duplicate exports here.
+
+// ai-assistant/ — Gemini AI module (ONLY place in SDK calling Gemini for AI features)
+// Per ADR-005, the ai-assistant module exposes its own entry point at
+// './ai-assistant/index.js'. All items (constants, use cases, types) are
+// re-exported at the top of this file for backward compatibility — no
+// duplicate exports here.
+
 // DI
 export { TOKENS, type Token } from './di/tokens.js';
 export { initializeSdk, resetSdk, sdkContainer, type SdkConfig } from './di/container.js';

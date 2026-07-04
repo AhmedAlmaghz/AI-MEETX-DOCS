@@ -243,7 +243,7 @@ export class LogoutUseCase implements UseCase<void, void, Error> {
       payload: {
         userId: session.userId,
         sessionId: session.id,
-        logoutAt: new Date().toISOString() as import('@aimeetx/types').IsoDateString,
+        logoutAt: new Date().toISOString(),
       },
     });
 

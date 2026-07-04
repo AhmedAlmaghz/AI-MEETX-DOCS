@@ -1,0 +1,380 @@
+تمام. الآن سننتقل من “المحرك النظري” إلى **أول نظام فعلي يُبنى داخل EEE Studio**.
+
+وسنختار نظام صغير نسبيًا لكن **كامل هندسيًا** حتى نثبت أن المنظومة تعمل:
+
+> 🎯 **نظام: EEE Meeting Intelligence System (MIS v1.0)**
+> نظام اجتماعات ذكي (تسجيل → تحليل → قرارات → مهام → أحداث)
+
+---
+
+# SYSTEM_SPEC — Meeting Intelligence System (MIS v1.0)
+
+```text id="mis-001"
+SYSTEM_SPEC {
+
+metadata {
+    system_id: "EEE-MIS-001"
+    name: "Meeting Intelligence System"
+    version: "1.0"
+    description: "AI-native enterprise meeting system that converts meetings into structured knowledge, tasks, and events"
+    owner: "EEE Platform"
+    classification: enterprise
+}
+
+vision {
+    mission: "Transform meetings into structured, actionable enterprise knowledge"
+    goals: [
+        "Capture meeting conversations",
+        "Extract decisions automatically",
+        "Generate tasks and workflows",
+        "Create domain events",
+        "Store structured knowledge"
+    ]
+    success_criteria: [
+        "100% meeting traceability",
+        "Zero lost decisions",
+        "Automatic task generation",
+        "Event-driven integration with AIP"
+    ]
+    constraints: [
+        "Technology agnostic",
+        "Event-driven only",
+        "No unstructured outputs"
+    ]
+}
+```
+
+---
+
+# DOMAIN MODEL
+
+```text id="mis-domain"
+domains {
+
+bounded_contexts: [
+
+{
+    name: "Meeting Management",
+    purpose: "Manage meeting lifecycle and participants",
+    entities: [
+        "Meeting",
+        "Participant",
+        "Agenda",
+        "Transcript"
+    ],
+    value_objects: [
+        "MeetingDuration",
+        "ParticipantRole"
+    ],
+    aggregates: [
+        "MeetingAggregate"
+    ],
+    domain_events: [
+        "MeetingStarted",
+        "MeetingEnded"
+    ],
+    rules: [
+        "A meeting must have at least one participant",
+        "A meeting cannot end before it starts"
+    ],
+    relationships: [
+        "Meeting has many Participants"
+    ]
+},
+
+{
+    name: "Meeting Intelligence",
+    purpose: "Extract structured intelligence from meetings",
+    entities: [
+        "Decision",
+        "ActionItem",
+        "Insight"
+    ],
+    value_objects: [
+        "ConfidenceScore"
+    ],
+    aggregates: [
+        "IntelligenceAggregate"
+    ],
+    domain_events: [
+        "DecisionExtracted",
+        "ActionItemCreated"
+    ],
+    rules: [
+        "Every decision must have a source transcript reference"
+    ],
+    relationships: [
+        "Decisions generate ActionItems"
+    ]
+}
+
+]
+}
+```
+
+---
+
+# ROLES
+
+```text id="mis-roles"
+roles {
+
+{
+    role_id: "ROLE-MEETING-COORDINATOR",
+    name: "Meeting Coordinator",
+    responsibilities: [
+        "Manage meeting lifecycle",
+        "Track participants",
+        "Control agenda flow"
+    ],
+    inputs: ["meeting_request"],
+    outputs: ["meeting_session"],
+    permissions: ["create_meeting", "end_meeting"],
+    constraints: ["no decision authority"],
+    domain_mapping: "Meeting Management"
+},
+
+{
+    role_id: "ROLE-AI-ANALYST",
+    name: "AI Meeting Analyst",
+    responsibilities: [
+        "Extract decisions",
+        "Generate action items",
+        "Detect insights"
+    ],
+    inputs: ["transcript"],
+    outputs: ["decisions", "actions", "insights"],
+    permissions: ["read_transcript"],
+    constraints: ["cannot modify meeting data"],
+    domain_mapping: "Meeting Intelligence"
+}
+
+}
+}
+```
+
+---
+
+# AGENTS
+
+```text id="mis-agents"
+agents {
+
+{
+    agent_id: "AG-MEETING-COORD",
+    role_ref: "ROLE-MEETING-COORDINATOR",
+    capabilities: [
+        "session_management",
+        "participant_tracking"
+    ],
+    input_contracts: ["MeetingRequest"],
+    output_contracts: ["MeetingSession"],
+    memory_scope: {
+        short_term: true,
+        long_term: false,
+        knowledge_graph: false
+    },
+    tools: ["calendar", "session_store"],
+    consumes_events: [],
+    produces_events: ["MeetingStarted", "MeetingEnded"],
+    failure_policy: {
+        retry: true,
+        fallback: false,
+        escalate: true
+    }
+},
+
+{
+    agent_id: "AG-AI-ANALYST",
+    role_ref: "ROLE-AI-ANALYST",
+    capabilities: [
+        "nlp_analysis",
+        "decision_extraction",
+        "task_generation"
+    ],
+    input_contracts: ["Transcript"],
+    output_contracts: ["MeetingInsights"],
+    memory_scope: {
+        short_term: true,
+        long_term: true,
+        knowledge_graph: true
+    },
+    tools: ["llm_runtime", "knowledge_graph"],
+    consumes_events: ["MeetingEnded"],
+    produces_events: ["DecisionExtracted", "ActionItemCreated"],
+    failure_policy: {
+        retry: true,
+        fallback: true,
+        escalate: true
+    }
+}
+
+}
+}
+```
+
+---
+
+# WORKFLOW
+
+```text id="mis-workflow"
+workflows {
+
+{
+    workflow_id: "WF-MEETING-PROCESS",
+    name: "Meeting Processing Workflow",
+
+    states: [
+        "CREATED",
+        "IN_PROGRESS",
+        "ENDED",
+        "ANALYZED",
+        "STRUCTURED"
+    ],
+
+    transitions: [
+        { from: "CREATED", to: "IN_PROGRESS", trigger: "start_meeting" },
+        { from: "IN_PROGRESS", to: "ENDED", trigger: "end_meeting" },
+        { from: "ENDED", to: "ANALYZED", trigger: "ai_analysis" },
+        { from: "ANALYZED", to: "STRUCTURED", trigger: "generate_outputs" }
+    ],
+
+    agents_involved: [
+        "AG-MEETING-COORD",
+        "AG-AI-ANALYST"
+    ],
+
+    events_triggered: [
+        "MeetingStarted",
+        "MeetingEnded",
+        "DecisionExtracted",
+        "ActionItemCreated"
+    ],
+
+    failure_handling: {
+        retry: true,
+        compensation: true,
+        rollback: true
+    }
+
+}
+
+}
+}
+```
+
+---
+
+# EVENTS
+
+```text id="mis-events"
+events {
+
+{
+    event_id: "EV-MEETING-ENDED",
+    name: "MeetingEnded",
+    type: "domain",
+    version: "1.0",
+    payload_schema: {
+        meeting_id: "string",
+        transcript_ref: "string",
+        duration: "number"
+    },
+    producer: "AG-MEETING-COORD",
+    consumers: ["AG-AI-ANALYST"],
+    correlation_id: true
+},
+
+{
+    event_id: "EV-ACTION-CREATED",
+    name: "ActionItemCreated",
+    type: "domain",
+    version: "1.0",
+    payload_schema: {
+        action_id: "string",
+        meeting_id: "string",
+        assignee: "string"
+    },
+    producer: "AG-AI-ANALYST",
+    consumers: ["UBP-TASK-SERVICE"],
+    correlation_id: true
+}
+
+}
+}
+```
+
+---
+
+# API CONTRACT
+
+```text id="mis-api"
+apis {
+
+{
+    api_id: "API-MEETING",
+    name: "Meeting API",
+    type: "event",
+    version: "1.0",
+
+    endpoints: [
+        {
+            method: "POST",
+            path: "/meetings/start",
+            request: { title: "string" },
+            response: { meeting_id: "string" },
+            errors: ["400", "500"]
+        },
+
+        {
+            method: "POST",
+            path: "/meetings/end",
+            request: { meeting_id: "string" },
+            response: { status: "string" },
+            errors: ["404", "500"]
+        }
+    ],
+
+    security: {
+        auth: "zero_trust",
+        permissions: ["meeting.write"]
+    }
+}
+
+}
+}
+```
+
+---
+
+# 🔥 ماذا فعلنا الآن؟
+
+لقد أنشأنا أول نظام حقيقي داخل EEE:
+
+### ✔ نظام اجتماعات كامل
+
+* Domains
+* Roles
+* Agents
+* Events
+* Workflows
+* APIs
+
+### ✔ Event-driven
+
+### ✔ AI-native
+
+### ✔ Technology-agnostic
+
+### ✔ قابل للتحويل لأي Stack
+
+---
+
+# 🚀 الخطوة التالية (حاسمة جدًا)
+
+الآن لدينا خياران واقعيان:
+
+## 1) تحويل هذا النظام إلى Runtime قابل للتنفيذ (LangGraph / MCP Engine)
+
+## 2) بناء نظام ثاني أكبر (CRM أو Accounting أو ERP Core Module)
+

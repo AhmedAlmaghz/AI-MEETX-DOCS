@@ -2,17 +2,16 @@ import 'reflect-metadata';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { IsoDateString, MeetingId, ParticipantId, RecordingId, UserId, Uuid } from '@aimeetx/types';
-import { failure, success } from '@aimeetx/types';
+import type { IsoDateString, MeetingId, ParticipantId, RecordingId, UserId } from '@aimeetx/types';
+import { success } from '@aimeetx/types';
 
 import { InMemoryEventBus } from '@aimeetx/events';
 
-import type { Meeting, MeetingSettings, ParticipantRole } from '../model/meeting.js';
+import type { Meeting } from '../model/meeting.js';
 import { DEFAULT_MEETING_SETTINGS } from '../model/meeting.js';
 import type {
   EgressStatus,
   MeetingRecording,
-  RecordingLayout,
 } from '../model/recording.js';
 import type {
   DownloadLinkGenerator,
@@ -39,12 +38,12 @@ const egressId = 'egress_123';
 
 const hostActor: RecordingActorClaims = {
   userId: 'user_host' as UserId,
-  role: 'host' as ParticipantRole,
+  role: 'host',
 };
 
 const attendeeActor: RecordingActorClaims = {
   userId: 'user_attendee' as UserId,
-  role: 'attendee' as ParticipantRole,
+  role: 'attendee',
 };
 
 function createMeeting(overrides: Partial<Meeting> = {}): Meeting {
@@ -56,7 +55,7 @@ function createMeeting(overrides: Partial<Meeting> = {}): Meeting {
     status: 'active',
     passcode: null,
     maxParticipants: 100,
-    settings: DEFAULT_MEETING_SETTINGS as MeetingSettings,
+    settings: DEFAULT_MEETING_SETTINGS,
     livekitRoomName: 'room_test',
     startedAt: startedAt,
     endedAt: null,
@@ -112,13 +111,11 @@ function createDownloadLinkGenerator(): DownloadLinkGenerator {
 describe('Phase 10 recording use cases', () => {
   let recordingRepository: RecordingRepository;
   let recordingGateway: RecordingGateway;
-  let downloadLinkGenerator: DownloadLinkGenerator;
   let eventBus: InMemoryEventBus;
 
   beforeEach(() => {
     recordingRepository = createRecordingRepository();
     recordingGateway = createRecordingGateway();
-    downloadLinkGenerator = createDownloadLinkGenerator();
     eventBus = new InMemoryEventBus();
   });
 

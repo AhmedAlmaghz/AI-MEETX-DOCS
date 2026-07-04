@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { IsoDateString, OrganizationId, UserId, Uuid } from '@aimeetx/types';
+import type { IsoDateString, OrganizationId, UserId } from '@aimeetx/types';
 import { failure, success } from '@aimeetx/types';
 
 import { InMemoryFeatureFlagCache } from '../../data/in-memory-feature-flag-cache.js';
@@ -11,7 +11,6 @@ import type {
   AuditLogEntry,
   Tenant,
   TenantFeatureFlags,
-  TenantId,
   TenantMember,
 } from '../model/admin.js';
 import { DEFAULT_TENANT_FEATURE_FLAGS, FEATURE_FLAG_CACHE_TTL_MS } from '../model/admin.js';
@@ -30,7 +29,7 @@ import {
   UpdateFeatureFlagsUseCase,
 } from './admin-use-cases.js';
 
-const tenantId = 'tenant_123' as OrganizationId as TenantId;
+const tenantId = 'tenant_123' as OrganizationId;
 const userId = 'user_admin' as UserId;
 const memberId = 'member_123' as Uuid;
 const createdAt = '2026-01-01T00:00:00.000Z' as IsoDateString;
@@ -182,7 +181,7 @@ describe('Phase 08 admin RBAC use cases', () => {
 
     const allowed = await useCase.execute({ actor: tenantAdmin, tenantId, featureFlags });
     const denied = await useCase.execute({
-      actor: { ...tenantAdmin, tenantId: 'tenant_other' as OrganizationId as TenantId },
+      actor: { ...tenantAdmin, tenantId: 'tenant_other' as OrganizationId },
       tenantId,
       featureFlags,
     });
@@ -228,7 +227,7 @@ describe('Phase 08 admin RBAC use cases', () => {
     const deniedByRole = await useCase.execute({ actor: tenantMember, query: { tenantId } });
     const deniedByTenant = await useCase.execute({
       actor: tenantAdmin,
-      query: { tenantId: 'tenant_other' as OrganizationId as TenantId },
+      query: { tenantId: 'tenant_other' as OrganizationId },
     });
 
     expect(allowed.isSuccess).toBe(true);

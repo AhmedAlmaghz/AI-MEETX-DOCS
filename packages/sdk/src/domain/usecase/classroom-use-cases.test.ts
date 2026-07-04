@@ -26,18 +26,11 @@ import type {
 import {
   CreateClassroomSessionUseCase,
   CreateQuizUseCase,
-  ActivateQuizUseCase,
-  CloseQuizUseCase,
   SubmitQuizResponseUseCase,
   GradeQuizUseCase,
   CreateBreakoutRoomsUseCase,
-  EndClassroomSessionUseCase,
   RecordAttendanceUseCase,
   ExportAttendanceReportUseCase,
-  GetClassroomSessionUseCase,
-  GetQuizUseCase,
-  GetQuizResultsUseCase,
-  ListAttendanceRecordsUseCase,
 } from './classroom-use-cases.js';
 
 // ============================================================================

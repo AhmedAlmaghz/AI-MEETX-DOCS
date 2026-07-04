@@ -240,8 +240,11 @@ export class GeminiAiGateway implements AiMeetingService {
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
+        const errorMessage = typeof (error as Record<string, unknown>)?.message === 'string'
+          ? (error as Record<string, string>).message
+          : 'Unknown error';
         return failure(
-          new Error(`Gemini API error: ${response.status} - ${(error as Record<string, unknown>)?.message || 'Unknown error'}`),
+          new Error(`Gemini API error: ${response.status} - ${errorMessage}`),
         );
       }
 

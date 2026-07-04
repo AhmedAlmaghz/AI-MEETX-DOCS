@@ -31,7 +31,7 @@ import {
   TranslationConsumer,
 } from './analytics-use-cases.js';
 
-const tenantId = 'tenant_analytics' as OrganizationId as AnalyticsTenantId;
+const tenantId = 'tenant_analytics' as OrganizationId;
 const meetingId = 'meeting_analytics' as MeetingId;
 const hostId = 'user_host' as UserId;
 const startedAt = '2026-01-01T10:00:00.000Z' as IsoDateString;
