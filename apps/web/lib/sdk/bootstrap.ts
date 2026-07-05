@@ -47,6 +47,52 @@ import {
   ClearNotificationsUseCase,
 } from '@aimeetx/sdk';
 import { GetPlatformMetricsUseCase } from '@aimeetx/sdk';
+import {
+  CreateTenantUseCase,
+  SuspendTenantUseCase,
+  UpdateFeatureFlagsUseCase,
+  GetTenantFeatureFlagsUseCase,
+  QueryAuditLogUseCase,
+  InviteTenantMemberUseCase,
+} from '@aimeetx/sdk';
+import {
+  ProcessTranscriptSegmentUseCase,
+  GenerateRunningSummaryUseCase,
+  ExtractActionItemsUseCase,
+  AskAiQuestionUseCase,
+  GeneratePostMeetingReportUseCase,
+} from '@aimeetx/sdk';
+import {
+  StartTranslationUseCase,
+  StopTranslationUseCase,
+  ChangeTargetLanguageUseCase,
+  StreamAudioToTranslationUseCase,
+} from '@aimeetx/sdk';
+import {
+  StartStrokeUseCase,
+  MoveStrokeUseCase,
+  EndStrokeUseCase,
+  ClearWhiteboardUseCase,
+  UndoStrokeUseCase,
+  GetWhiteboardStateUseCase,
+} from '@aimeetx/sdk';
+import {
+  CreateClassroomSessionUseCase,
+  CreateQuizUseCase,
+  ActivateQuizUseCase,
+  CloseQuizUseCase,
+  SubmitQuizResponseUseCase,
+  GradeQuizUseCase,
+  CreateBreakoutRoomsUseCase,
+  EndClassroomSessionUseCase,
+  RecordAttendanceUseCase,
+  ExportAttendanceReportUseCase,
+  GetClassroomSessionUseCase,
+  GetClassroomSessionByMeetingUseCase,
+  GetQuizUseCase,
+  GetQuizResultsUseCase,
+  ListAttendanceRecordsUseCase,
+} from '@aimeetx/sdk';
 
 import { inMemoryRepositories } from './in-memory-repositories';
 
@@ -87,6 +133,24 @@ export function ensureSdkInitialized(): void {
   sdkContainer.registerInstance(TOKENS.UserEngagementRepository, inMemoryRepositories.userEngagement);
   sdkContainer.registerInstance(TOKENS.AnalyticsSummaryRepository, inMemoryRepositories.analyticsSummary);
   sdkContainer.registerInstance(TOKENS.FeatureFlagCache, inMemoryRepositories.featureFlagCache);
+
+  // --- AI Repositories ---
+  sdkContainer.registerInstance(TOKENS.MeetingSummaryRepository, inMemoryRepositories.meetingSummary);
+  sdkContainer.registerInstance(TOKENS.ActionItemRepository, inMemoryRepositories.actionItem);
+  sdkContainer.registerInstance(TOKENS.MeetingReportRepository, inMemoryRepositories.meetingReport);
+  sdkContainer.registerInstance(TOKENS.TranscriptContextRepository, inMemoryRepositories.transcriptContext);
+  sdkContainer.registerInstance(TOKENS.AiMeetingService, inMemoryRepositories.aiMeetingService);
+
+  // --- Translation Repositories ---
+  sdkContainer.registerInstance(TOKENS.TranslationSessionRepository, inMemoryRepositories.translationSession);
+  sdkContainer.registerInstance(TOKENS.TranscriptRepository, inMemoryRepositories.transcript);
+  sdkContainer.registerInstance(TOKENS.TranslationRouter, inMemoryRepositories.translationRouter);
+  sdkContainer.registerInstance(TOKENS.TranslationGateway, inMemoryRepositories.translationGateway);
+  sdkContainer.registerInstance(TOKENS.TranslationPrivacyLayer, inMemoryRepositories.translationPrivacyLayer);
+
+  // --- Whiteboard Repositories ---
+  sdkContainer.registerInstance(TOKENS.WhiteboardRepository, inMemoryRepositories.whiteboard);
+  sdkContainer.registerInstance(TOKENS.WhiteboardSyncGateway, inMemoryRepositories.whiteboardSync);
 
   // --- Use Cases ---
   sdkContainer.register(TOKENS.LoginWithEmailUseCase, { useClass: LoginWithEmailUseCase });
@@ -129,6 +193,52 @@ export function ensureSdkInitialized(): void {
   sdkContainer.register(TOKENS.ClearNotificationsUseCase, { useClass: ClearNotificationsUseCase });
 
   sdkContainer.register(TOKENS.GetPlatformMetricsUseCase, { useClass: GetPlatformMetricsUseCase });
+
+  // --- Admin Use Cases ---
+  sdkContainer.register(TOKENS.CreateTenantUseCase, { useClass: CreateTenantUseCase });
+  sdkContainer.register(TOKENS.SuspendTenantUseCase, { useClass: SuspendTenantUseCase });
+  sdkContainer.register(TOKENS.UpdateFeatureFlagsUseCase, { useClass: UpdateFeatureFlagsUseCase });
+  sdkContainer.register(TOKENS.GetTenantFeatureFlagsUseCase, { useClass: GetTenantFeatureFlagsUseCase });
+  sdkContainer.register(TOKENS.QueryAuditLogUseCase, { useClass: QueryAuditLogUseCase });
+  sdkContainer.register(TOKENS.InviteTenantMemberUseCase, { useClass: InviteTenantMemberUseCase });
+
+  // --- AI Use Cases ---
+  sdkContainer.register(TOKENS.ProcessTranscriptSegmentUseCase, { useClass: ProcessTranscriptSegmentUseCase });
+  sdkContainer.register(TOKENS.GenerateRunningSummaryUseCase, { useClass: GenerateRunningSummaryUseCase });
+  sdkContainer.register(TOKENS.ExtractActionItemsUseCase, { useClass: ExtractActionItemsUseCase });
+  sdkContainer.register(TOKENS.AskAiQuestionUseCase, { useClass: AskAiQuestionUseCase });
+  sdkContainer.register(TOKENS.GeneratePostMeetingReportUseCase, { useClass: GeneratePostMeetingReportUseCase });
+
+  // --- Translation Use Cases ---
+  sdkContainer.register(TOKENS.StartTranslationUseCase, { useClass: StartTranslationUseCase });
+  sdkContainer.register(TOKENS.StopTranslationUseCase, { useClass: StopTranslationUseCase });
+  sdkContainer.register(TOKENS.ChangeTargetLanguageUseCase, { useClass: ChangeTargetLanguageUseCase });
+  sdkContainer.register(TOKENS.StreamAudioToTranslationUseCase, { useClass: StreamAudioToTranslationUseCase });
+
+  // --- Whiteboard Use Cases ---
+  sdkContainer.register(TOKENS.StartStrokeUseCase, { useClass: StartStrokeUseCase });
+  sdkContainer.register(TOKENS.MoveStrokeUseCase, { useClass: MoveStrokeUseCase });
+  sdkContainer.register(TOKENS.EndStrokeUseCase, { useClass: EndStrokeUseCase });
+  sdkContainer.register(TOKENS.ClearWhiteboardUseCase, { useClass: ClearWhiteboardUseCase });
+  sdkContainer.register(TOKENS.UndoStrokeUseCase, { useClass: UndoStrokeUseCase });
+  sdkContainer.register(TOKENS.GetWhiteboardStateUseCase, { useClass: GetWhiteboardStateUseCase });
+
+  // --- Classroom Use Cases ---
+  sdkContainer.register(TOKENS.CreateClassroomSessionUseCase, { useClass: CreateClassroomSessionUseCase });
+  sdkContainer.register(TOKENS.GetClassroomSessionUseCase, { useClass: GetClassroomSessionUseCase });
+  sdkContainer.register(TOKENS.GetClassroomSessionByMeetingUseCase, { useClass: GetClassroomSessionByMeetingUseCase });
+  sdkContainer.register(TOKENS.EndClassroomSessionUseCase, { useClass: EndClassroomSessionUseCase });
+  sdkContainer.register(TOKENS.CreateQuizUseCase, { useClass: CreateQuizUseCase });
+  sdkContainer.register(TOKENS.ActivateQuizUseCase, { useClass: ActivateQuizUseCase });
+  sdkContainer.register(TOKENS.CloseQuizUseCase, { useClass: CloseQuizUseCase });
+  sdkContainer.register(TOKENS.SubmitQuizResponseUseCase, { useClass: SubmitQuizResponseUseCase });
+  sdkContainer.register(TOKENS.GradeQuizUseCase, { useClass: GradeQuizUseCase });
+  sdkContainer.register(TOKENS.CreateBreakoutRoomsUseCase, { useClass: CreateBreakoutRoomsUseCase });
+  sdkContainer.register(TOKENS.RecordAttendanceUseCase, { useClass: RecordAttendanceUseCase });
+  sdkContainer.register(TOKENS.ExportAttendanceReportUseCase, { useClass: ExportAttendanceReportUseCase });
+  sdkContainer.register(TOKENS.GetQuizUseCase, { useClass: GetQuizUseCase });
+  sdkContainer.register(TOKENS.GetQuizResultsUseCase, { useClass: GetQuizResultsUseCase });
+  sdkContainer.register(TOKENS.ListAttendanceRecordsUseCase, { useClass: ListAttendanceRecordsUseCase });
 
   initialized = true;
 }

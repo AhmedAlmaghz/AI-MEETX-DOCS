@@ -22,6 +22,11 @@ import type {
   NotificationId,
   RecordingId,
   OrganizationId,
+  SummaryId,
+  ActionItemId,
+  ReportId,
+  TranslationSessionId,
+  TranslationSegmentId,
 } from '@aimeetx/types';
 
 import type {
@@ -152,6 +157,38 @@ import type {
   TenantId,
   AnalyticsTenantId,
   UserNotificationPreferences,
+  MeetingSummary,
+  ActionItem,
+  MeetingReport,
+  MeetingSummaryRepository,
+  ActionItemRepository,
+  MeetingReportRepository,
+  TranscriptContextRepository,
+  AiMeetingService,
+  MeetingTranscriptContext,
+  TranscriptContextSegment,
+  AskAiQuestionInput,
+  CreateMeetingSummaryInput,
+  CreateActionItemInput,
+  CreateMeetingReportInput,
+  TranslationSession,
+  TranscriptSegment,
+  TranslationLanguagePreference,
+  GeminiLiveTranslateConfig,
+  TranslationSessionError,
+  CreateTranslationSessionInput,
+  TranslationSessionRepository,
+  TranscriptRepository,
+  TranslationRouter,
+  TranslationGateway,
+  TranslationPrivacyLayer,
+  TranslationEventCallbacks,
+  WhiteboardRepository,
+  WhiteboardState,
+  WhiteboardStroke,
+  WhiteboardSyncGateway,
+  WhiteboardSyncCallbacks,
+  WhiteboardOperation,
 } from '@aimeetx/sdk';
 
 const store = {
@@ -1134,6 +1171,277 @@ class InMemoryReadReceiptRepository implements ReadReceiptRepository {
   async hasUserReadMessage(_messageId: MessageId, _userId: UserId): Promise<Result<boolean, Error>> { return success(false); }
 }
 
+// ============================================================================
+// AI Mock Repositories
+// ============================================================================
+
+class InMemoryMeetingSummaryRepository implements MeetingSummaryRepository {
+  private readonly summaries = new Map<SummaryId, MeetingSummary>();
+
+  async createSummary(input: CreateMeetingSummaryInput): Promise<Result<MeetingSummary, Error>> {
+    const id = `summary_${Date.now()}` as SummaryId;
+    const summary: MeetingSummary = { id, meetingId: input.meetingId, summaryText: input.summaryText, keyTopics: input.keyTopics, generatedAt: nowIso(), isFinal: input.isFinal };
+    this.summaries.set(id, summary);
+    return success(summary);
+  }
+  async getSummary(summaryId: SummaryId): Promise<Result<MeetingSummary | null, Error>> { return success(this.summaries.get(summaryId) ?? null); }
+  async getLatestSummaryByMeeting(meetingId: MeetingId): Promise<Result<MeetingSummary | null, Error>> {
+    const found = [...this.summaries.values()].filter((s) => s.meetingId === meetingId).sort((a, b) => b.generatedAt.localeCompare(a.generatedAt));
+    return success(found[0] ?? null);
+  }
+  async updateSummary(summaryId: SummaryId, update: { summaryText?: string; keyTopics?: ReadonlyArray<string>; isFinal?: boolean }): Promise<Result<MeetingSummary, Error>> {
+    const s = this.summaries.get(summaryId); if (!s) return failure(new Error('Summary not found'));
+    const next = { ...s, ...update } as MeetingSummary;
+    this.summaries.set(summaryId, next); return success(next);
+  }
+  async markAsFinal(summaryId: SummaryId): Promise<Result<MeetingSummary, Error>> { return this.updateSummary(summaryId, { isFinal: true }); }
+  async deleteSummariesByMeeting(meetingId: MeetingId): Promise<Result<number, Error>> { let n = 0; for (const [k, v] of this.summaries) { if (v.meetingId === meetingId) { this.summaries.delete(k); n++; } } return success(n); }
+}
+
+class InMemoryActionItemRepository implements ActionItemRepository {
+  private readonly items = new Map<ActionItemId, ActionItem>();
+
+  async createActionItem(input: CreateActionItemInput): Promise<Result<ActionItem, Error>> {
+    const id = `action_${Date.now()}` as ActionItemId;
+    const item: ActionItem = { id, meetingId: input.meetingId, description: input.description, assignedTo: input.assignedTo, dueDate: input.dueDate, detectedAt: nowIso(), confidence: input.confidence };
+    this.items.set(id, item); return success(item);
+  }
+  async saveAll(inputs: ReadonlyArray<CreateActionItemInput>): Promise<Result<ReadonlyArray<ActionItem>, Error>> {
+    const results: ActionItem[] = []; for (const input of inputs) { const r = await this.createActionItem(input); if (r.isSuccess) results.push(r.value); } return success(results);
+  }
+  async getActionItem(actionItemId: ActionItemId): Promise<Result<ActionItem | null, Error>> { return success(this.items.get(actionItemId) ?? null); }
+  async getActionItemsByMeeting(meetingId: MeetingId): Promise<Result<ReadonlyArray<ActionItem>, Error>> {
+    return success([...this.items.values()].filter((i) => i.meetingId === meetingId));
+  }
+  async updateActionItem(actionItemId: ActionItemId, update: { description?: string; assignedTo?: string | null; dueDate?: string | null }): Promise<Result<ActionItem, Error>> {
+    const i = this.items.get(actionItemId); if (!i) return failure(new Error('Action item not found'));
+    const next = { ...i, ...update } as ActionItem; this.items.set(actionItemId, next); return success(next);
+  }
+  async deleteActionItem(actionItemId: ActionItemId): Promise<Result<void, Error>> { this.items.delete(actionItemId); return success(undefined); }
+  async deleteActionItemsByMeeting(meetingId: MeetingId): Promise<Result<number, Error>> { let n = 0; for (const [k, v] of this.items) { if (v.meetingId === meetingId) { this.items.delete(k); n++; } } return success(n); }
+}
+
+class InMemoryMeetingReportRepository implements MeetingReportRepository {
+  private readonly reports = new Map<ReportId, MeetingReport>();
+
+  async createReport(input: CreateMeetingReportInput): Promise<Result<MeetingReport, Error>> {
+    const id = `report_${Date.now()}` as ReportId;
+    const report: MeetingReport = { id, meetingId: input.meetingId, summary: input.summary, decisions: input.decisions, actionItems: input.actionItems, topicBreakdown: input.topicBreakdown, generatedAt: nowIso(), status: 'ready' };
+    this.reports.set(id, report); return success(report);
+  }
+  async getReport(reportId: ReportId): Promise<Result<MeetingReport | null, Error>> { return success(this.reports.get(reportId) ?? null); }
+  async getReportByMeeting(meetingId: MeetingId): Promise<Result<MeetingReport | null, Error>> {
+    const found = [...this.reports.values()].filter((r) => r.meetingId === meetingId).sort((a, b) => b.generatedAt.localeCompare(a.generatedAt));
+    return success(found[0] ?? null);
+  }
+  async updateReport(reportId: ReportId, update: { summary?: string; decisions?: ReadonlyArray<string>; actionItems?: ReadonlyArray<ActionItem>; topicBreakdown?: Readonly<Record<string, number>>; status?: MeetingReport['status'] }): Promise<Result<MeetingReport, Error>> {
+    const r = this.reports.get(reportId); if (!r) return failure(new Error('Report not found'));
+    const next = { ...r, ...update } as MeetingReport; this.reports.set(reportId, next); return success(next);
+  }
+  async updateReportStatus(reportId: ReportId, status: MeetingReport['status']): Promise<Result<MeetingReport, Error>> { return this.updateReport(reportId, { status }); }
+  async deleteReport(reportId: ReportId): Promise<Result<void, Error>> { this.reports.delete(reportId); return success(undefined); }
+  async deleteReportsByMeeting(meetingId: MeetingId): Promise<Result<number, Error>> { let n = 0; for (const [k, v] of this.reports) { if (v.meetingId === meetingId) { this.reports.delete(k); n++; } } return success(n); }
+}
+
+class InMemoryTranscriptContextRepository implements TranscriptContextRepository {
+  private readonly segments = new Map<string, TranscriptContextSegment[]>();
+
+  async addSegment(meetingId: MeetingId, segment: TranscriptContextSegment): Promise<Result<void, Error>> {
+    const arr = this.segments.get(meetingId) ?? []; arr.push(segment); this.segments.set(meetingId, arr); return success(undefined);
+  }
+  async getContextWindow(meetingId: MeetingId, _windowMinutes?: number): Promise<Result<MeetingTranscriptContext, Error>> {
+    const segments = this.segments.get(meetingId) ?? []; return success({ meetingId, segments, windowMinutes: _windowMinutes ?? 30 });
+  }
+  async getAllSegments(meetingId: MeetingId): Promise<Result<ReadonlyArray<TranscriptContextSegment>, Error>> { return success(this.segments.get(meetingId) ?? []); }
+  async clearContextWindow(meetingId: MeetingId): Promise<Result<number, Error>> { const n = (this.segments.get(meetingId) ?? []).length; this.segments.delete(meetingId); return success(n); }
+  async getSegmentCount(meetingId: MeetingId): Promise<Result<number, Error>> { return success((this.segments.get(meetingId) ?? []).length); }
+}
+
+class InMemoryAiMeetingService implements AiMeetingService {
+  async processTranscriptSegment(_meetingId: MeetingId, _segment: TranscriptContextSegment): Promise<Result<void, Error>> { return success(undefined); }
+  async generateRunningSummary(meetingId: MeetingId): Promise<Result<MeetingSummary, Error>> {
+    return success({ id: `` as SummaryId, meetingId, summaryText: 'In-memory AI summary: Meeting discussed key topics and action items.', keyTopics: ['discussion', 'planning'], generatedAt: nowIso(), isFinal: false });
+  }
+  async detectActionItems(meetingId: MeetingId): Promise<Result<ReadonlyArray<ActionItem>, Error>> {
+    return success([{ id: `` as ActionItemId, meetingId, description: 'Follow up on action items', assignedTo: 'team', dueDate: null, detectedAt: nowIso(), confidence: 0.8 }]);
+  }
+  async answerQuestion(input: AskAiQuestionInput): Promise<Result<string, Error>> {
+    return success(`Based on the meeting context: "${input.question}" - the team discussed this topic and agreed to address it in the next sprint.`);
+  }
+  async generatePostMeetingReport(meetingId: MeetingId): Promise<Result<MeetingReport, Error>> {
+    return success({ id: `` as ReportId, meetingId, summary: 'In-memory meeting report.', decisions: ['Proceed with plan A'], actionItems: [], topicBreakdown: { planning: 50, execution: 50 }, generatedAt: nowIso(), status: 'ready' });
+  }
+}
+
+// ============================================================================
+// Translation Mock Repositories
+// ============================================================================
+
+class InMemoryTranslationSessionRepository implements TranslationSessionRepository {
+  private readonly sessions = new Map<TranslationSessionId, TranslationSession>();
+
+  async createSession(input: CreateTranslationSessionInput): Promise<Result<TranslationSession, Error>> {
+    const id = `ts_${Date.now()}` as TranslationSessionId;
+    const session: TranslationSession = { id, meetingId: input.meetingId, sourceLanguage: input.sourceLanguage, targetLanguage: input.targetLanguage, status: 'active', startedAt: nowIso(), endedAt: null, lastHeartbeatAt: nowIso(), error: null };
+    this.sessions.set(id, session); return success(session);
+  }
+  async getSession(sessionId: TranslationSessionId): Promise<Result<TranslationSession | null, Error>> { return success(this.sessions.get(sessionId) ?? null); }
+  async getActiveSessionsByMeeting(meetingId: MeetingId): Promise<Result<ReadonlyArray<TranslationSession>, Error>> {
+    return success([...this.sessions.values()].filter((s) => s.meetingId === meetingId && s.status === 'active'));
+  }
+  async getSessionByLanguage(meetingId: MeetingId, targetLanguage: string): Promise<Result<TranslationSession | null, Error>> {
+    return success([...this.sessions.values()].find((s) => s.meetingId === meetingId && s.targetLanguage === targetLanguage) ?? null);
+  }
+  async updateSessionStatus(sessionId: TranslationSessionId, status: TranslationSession['status']): Promise<Result<TranslationSession, Error>> {
+    const s = this.sessions.get(sessionId); if (!s) return failure(new Error('Session not found'));
+    const next = { ...s, status } as TranslationSession; this.sessions.set(sessionId, next); return success(next);
+  }
+  async updateHeartbeat(sessionId: TranslationSessionId): Promise<Result<TranslationSession, Error>> {
+    return this.updateSessionStatus(sessionId, 'active');
+  }
+  async terminateSession(sessionId: TranslationSessionId, reason: string): Promise<Result<TranslationSession, Error>> {
+    const s = this.sessions.get(sessionId); if (!s) return failure(new Error('Session not found'));
+    const next = { ...s, status: 'terminated' as const, endedAt: nowIso(), error: { code: 'UserAction', message: reason, sessionId } as unknown as TranslationSessionError } as TranslationSession;
+    this.sessions.set(sessionId, next); return success(next);
+  }
+  async terminateAllSessionsForMeeting(meetingId: MeetingId, reason: string): Promise<Result<number, Error>> {
+    let n = 0; for (const [k, v] of this.sessions) { if (v.meetingId === meetingId) { this.sessions.set(k, { ...v, status: 'terminated' as const, endedAt: nowIso() } as TranslationSession); n++; } } return success(n);
+  }
+  async countActiveSessions(meetingId: MeetingId): Promise<Result<number, Error>> {
+    return success([...this.sessions.values()].filter((s) => s.meetingId === meetingId && s.status === 'active').length);
+  }
+}
+
+class InMemoryTranscriptRepository implements TranscriptRepository {
+  private readonly segments = new Map<string, TranscriptSegment[]>();
+
+  async saveSegment(segment: TranscriptSegment): Promise<Result<TranscriptSegment, Error>> {
+    const arr = this.segments.get(segment.meetingId) ?? []; arr.push(segment); this.segments.set(segment.meetingId, arr); return success(segment);
+  }
+  async getSegment(_segmentId: TranslationSegmentId): Promise<Result<TranscriptSegment | null, Error>> { return success(null); }
+  async getSegmentsBySession(_sessionId: TranslationSessionId, _options?: { limit?: number }): Promise<Result<ReadonlyArray<TranscriptSegment>, Error>> { return success([]); }
+  async getSegmentsByMeeting(meetingId: MeetingId, _options?: { limit?: number; language?: string }): Promise<Result<ReadonlyArray<TranscriptSegment>, Error>> { return success(this.segments.get(meetingId) ?? []); }
+  async deleteSegmentsByMeeting(meetingId: MeetingId): Promise<Result<number, Error>> { const n = (this.segments.get(meetingId) ?? []).length; this.segments.delete(meetingId); return success(n); }
+  async deleteSegmentsBySession(_sessionId: TranslationSessionId): Promise<Result<number, Error>> { return success(0); }
+}
+
+class InMemoryTranslationRouter implements TranslationRouter {
+  private readonly prefs = new Map<string, TranslationLanguagePreference>();
+
+  async addParticipantLanguagePreference(participantId: ParticipantId, meetingId: MeetingId, targetLanguage: string): Promise<Result<TranslationLanguagePreference, Error>> {
+    const pref: TranslationLanguagePreference = { participantId, meetingId, targetLanguage, setAt: nowIso() };
+    this.prefs.set(`${meetingId}:${participantId}`, pref); return success(pref);
+  }
+  async removeParticipantLanguagePreference(participantId: ParticipantId, meetingId: MeetingId): Promise<Result<TranslationLanguagePreference | null, Error>> {
+    const p = this.prefs.get(`${meetingId}:${participantId}`) ?? null; this.prefs.delete(`${meetingId}:${participantId}`); return success(p);
+  }
+  async getParticipantLanguagePreference(participantId: ParticipantId, meetingId: MeetingId): Promise<Result<TranslationLanguagePreference | null, Error>> { return success(this.prefs.get(`${meetingId}:${participantId}`) ?? null); }
+  async getListenersForLanguage(meetingId: MeetingId, targetLanguage: string): Promise<Result<ReadonlyArray<ParticipantId>, Error>> {
+    return success([...this.prefs.values()].filter((p) => p.meetingId === meetingId && p.targetLanguage === targetLanguage).map((p) => p.participantId));
+  }
+  async getLanguagePreferencesForMeeting(meetingId: MeetingId): Promise<Result<ReadonlyArray<TranslationLanguagePreference>, Error>> {
+    return success([...this.prefs.values()].filter((p) => p.meetingId === meetingId));
+  }
+  async removeAllLanguagePreferencesForMeeting(meetingId: MeetingId): Promise<Result<number, Error>> { let n = 0; for (const [k, v] of this.prefs) { if (v.meetingId === meetingId) { this.prefs.delete(k); n++; } } return success(n); }
+}
+
+class InMemoryTranslationGateway implements TranslationGateway {
+  async startSession(meetingId: MeetingId, _sourceLanguage: string, _targetLanguage: string, _callbacks?: TranslationEventCallbacks): Promise<Result<TranslationSessionId, Error>> {
+    return success(`ts_gw_${Date.now()}` as TranslationSessionId);
+  }
+  async stopSession(_sessionId: TranslationSessionId, _reason: string): Promise<Result<void, Error>> { return success(undefined); }
+  async sendAudio(_sessionId: TranslationSessionId, _audioChunk: ArrayBuffer): Promise<Result<void, Error>> { return success(undefined); }
+  async broadcastAudio(_meetingId: MeetingId, _audioChunk: ArrayBuffer): Promise<Result<number, Error>> { return success(0); }
+  async getSessionConfig(_sessionId: TranslationSessionId): Promise<Result<GeminiLiveTranslateConfig | null, Error>> { return success(null); }
+  async isSessionActive(_sessionId: TranslationSessionId): Promise<Result<boolean, Error>> { return success(true); }
+  async destroySessionData(_sessionId: TranslationSessionId): Promise<Result<void, Error>> { return success(undefined); }
+}
+
+class InMemoryTranslationPrivacyLayer implements TranslationPrivacyLayer {
+  async isRecordingAllowed(_meetingId: MeetingId): Promise<Result<boolean, Error>> { return success(true); }
+  async isTranscriptStorageAllowed(_meetingId: MeetingId): Promise<Result<boolean, Error>> { return success(false); }
+  async destroySessionData(_sessionId: TranslationSessionId): Promise<Result<void, Error>> { return success(undefined); }
+  async destroyMeetingData(_meetingId: MeetingId): Promise<Result<void, Error>> { return success(undefined); }
+}
+
+// ============================================================================
+// Whiteboard Mock Repositories
+// ============================================================================
+
+class InMemoryWhiteboardRepository implements WhiteboardRepository {
+  private readonly states = new Map<ClassroomSessionId, WhiteboardState>();
+
+  async getState(sessionId: ClassroomSessionId): Promise<Result<WhiteboardState | null, Error>> {
+    return success(this.states.get(sessionId) ?? null);
+  }
+
+  async saveStroke(stroke: WhiteboardStroke): Promise<Result<WhiteboardStroke, Error>> {
+    let state = this.states.get(stroke.sessionId);
+    if (!state) {
+      state = { sessionId: stroke.sessionId, strokes: [], lastOperation: null, updatedAt: nowIso() };
+    }
+    const next = { ...state, strokes: [...state.strokes, stroke], updatedAt: nowIso() };
+    this.states.set(stroke.sessionId, next);
+    return success(stroke);
+  }
+
+  async clearStrokes(sessionId: ClassroomSessionId): Promise<Result<WhiteboardState, Error>> {
+    const state = this.states.get(sessionId) ?? { sessionId, strokes: [], lastOperation: null, updatedAt: nowIso() } as WhiteboardState;
+    const next = { ...state, strokes: [], updatedAt: nowIso() };
+    this.states.set(sessionId, next);
+    return success(next);
+  }
+
+  async undoLastStroke(sessionId: ClassroomSessionId, participantId: ParticipantId): Promise<Result<WhiteboardState, Error>> {
+    const state = this.states.get(sessionId);
+    if (!state) return failure(new Error('Whiteboard not found'));
+    const idx = state.strokes.map((s) => s.participantId).lastIndexOf(participantId);
+    if (idx === -1) return failure(new Error('No strokes to undo'));
+    const next = { ...state, strokes: state.strokes.filter((_, i) => i !== idx), updatedAt: nowIso() };
+    this.states.set(sessionId, next);
+    return success(next);
+  }
+
+  async getStrokes(sessionId: ClassroomSessionId): Promise<Result<ReadonlyArray<WhiteboardStroke>, Error>> {
+    const state = this.states.get(sessionId);
+    return success(state?.strokes ?? []);
+  }
+}
+
+class InMemoryWhiteboardSyncGateway implements WhiteboardSyncGateway {
+  private connected = false;
+  private callbacks: WhiteboardSyncCallbacks | null = null;
+
+  async connect(sessionId: ClassroomSessionId, _participantId: ParticipantId, callbacks: WhiteboardSyncCallbacks): Promise<Result<void, Error>> {
+    this.connected = true;
+    this.callbacks = callbacks;
+    return success(undefined);
+  }
+
+  async disconnect(): Promise<Result<void, Error>> {
+    this.connected = false;
+    this.callbacks = null;
+    return success(undefined);
+  }
+
+  async sendOperation(operation: WhiteboardOperation): Promise<Result<void, Error>> {
+    this.callbacks?.onOperation(operation);
+    return success(undefined);
+  }
+
+  async requestStateSync(): Promise<Result<void, Error>> {
+    return success(undefined);
+  }
+
+  async sendCursorUpdate(_x: number, _y: number): Promise<Result<void, Error>> {
+    return success(undefined);
+  }
+
+  isConnected(): boolean {
+    return this.connected;
+  }
+}
+
 export const inMemoryRepositories = {
   auth: new InMemoryAuthRepository(),
   profile: new InMemoryProfileRepository(),
@@ -1161,6 +1469,18 @@ export const inMemoryRepositories = {
   userEngagement: new InMemoryUserEngagementRepository(),
   analyticsSummary: new InMemoryAnalyticsSummaryRepository(),
   featureFlagCache: new InMemoryFeatureFlagCache() as unknown as FeatureFlagCache,
+  meetingSummary: new InMemoryMeetingSummaryRepository(),
+  actionItem: new InMemoryActionItemRepository(),
+  meetingReport: new InMemoryMeetingReportRepository(),
+  transcriptContext: new InMemoryTranscriptContextRepository(),
+  aiMeetingService: new InMemoryAiMeetingService(),
+  translationSession: new InMemoryTranslationSessionRepository(),
+  transcript: new InMemoryTranscriptRepository(),
+  translationRouter: new InMemoryTranslationRouter(),
+  translationGateway: new InMemoryTranslationGateway(),
+  translationPrivacyLayer: new InMemoryTranslationPrivacyLayer(),
+  whiteboard: new InMemoryWhiteboardRepository(),
+  whiteboardSync: new InMemoryWhiteboardSyncGateway(),
 };
 
 export { store as inMemoryStore };

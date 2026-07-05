@@ -1,314 +1,157 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 
-import { useTheme, colors, radius, spacing, typography } from '@aimeetx/ui';
-import type { Meeting, MeetingFact, PlatformMetricsSummary } from '@aimeetx/sdk';
+import { Button, colors } from '@aimeetx/ui';
+import type { Meeting, PlatformMetricsSummary } from '@aimeetx/sdk';
 
-import { ensureSdkInitialized } from '@/lib/sdk/bootstrap';
+import { ensureSdkInitialized, resolveUseCase } from '@/lib/sdk/bootstrap';
 import { useCurrentProfile, useSession } from '@/lib/sdk/hooks';
-import { resolveUseCase } from '@/lib/sdk/bootstrap';
 import { TOKENS } from '@aimeetx/sdk';
-
-interface DashboardData {
-  readonly upcoming: ReadonlyArray<Meeting>;
-  readonly active: ReadonlyArray<Meeting>;
-  readonly recentFacts: ReadonlyArray<MeetingFact>;
-  readonly platform: PlatformMetricsSummary | null;
-}
-
-type Palette = {
-  readonly background: string;
-  readonly surface: string;
-  readonly surfaceVariant: string;
-  readonly border: string;
-  readonly text: string;
-  readonly textSecondary: string;
-  readonly textDisabled: string;
-};
+import { usePalette } from '@/lib/hooks';
+import {
+  PageHeader, Card, StatCard, MetricCell, BarRow, PageLayout, LoadingScreen,
+} from '@/components/ui';
+import { formatMinutes, diffMinutes } from '@/lib/utils';
 
 export default function DashboardPage() {
   ensureSdkInitialized();
   const [session] = useSession();
   const { profile } = useCurrentProfile();
-  const { mode } = useTheme();
-  const isDark = mode === 'dark';
-  const palette: Palette = isDark ? colors.dark : colors.light;
+  const { palette } = usePalette();
 
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [meetings, setMeetings] = useState<ReadonlyArray<Meeting>>([]);
+  const [platform, setPlatform] = useState<PlatformMetricsSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     if (!session) return;
     setLoading(true);
     try {
-      const userId = session.userId;
-      const meetingsResult = await resolveUseCase<
-        InstanceType<typeof import('@aimeetx/sdk').ListMeetingsUseCase>
-      >(TOKENS.ListMeetingsUseCase).execute({ hostId: userId });
-
-      const activeResult = await resolveUseCase<
-        InstanceType<typeof import('@aimeetx/sdk').ListMeetingsUseCase>
-      >(TOKENS.ListMeetingsUseCase).execute({ hostId: userId });
-
-      const platformResult = await resolveUseCase<
-        InstanceType<typeof import('@aimeetx/sdk').GetPlatformMetricsUseCase>
-      >(TOKENS.GetPlatformMetricsUseCase).execute({
-        actor: { userId: session.userId, role: 'super_admin' },
-        range: { from: '2026-01-01', to: '2026-01-31' },
-      });
-
-      const allMeetings = meetingsResult.isSuccess ? meetingsResult.value : [];
-      const allActive = activeResult.isSuccess ? activeResult.value : [];
-      const platform = platformResult.isSuccess ? platformResult.value : null;
-
-      setData({
-        upcoming: allMeetings.filter((m) => m.status === 'scheduled'),
-        active: allActive.filter((m) => m.status === 'active'),
-        recentFacts: [],
-        platform,
-      });
+      const [meetingsResult, platformResult] = await Promise.all([
+        resolveUseCase<InstanceType<typeof import('@aimeetx/sdk').ListMeetingsUseCase>>(
+          TOKENS.ListMeetingsUseCase,
+        ).execute({ hostId: session.userId }),
+        resolveUseCase<InstanceType<typeof import('@aimeetx/sdk').GetPlatformMetricsUseCase>>(
+          TOKENS.GetPlatformMetricsUseCase,
+        ).execute({
+          actor: { userId: session.userId, role: 'super_admin' },
+          range: { from: '2026-01-01', to: '2026-01-31' },
+        }),
+      ]);
+      if (meetingsResult.isSuccess) setMeetings(meetingsResult.value);
+      if (platformResult.isSuccess) setPlatform(platformResult.value);
     } finally {
       setLoading(false);
     }
   }, [session]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useEffect(() => { void load(); }, [load]);
+
+  const active = useMemo(() => meetings.filter((m) => m.status === 'active'), [meetings]);
+  const upcoming = useMemo(() => meetings.filter((m) => m.status === 'scheduled').slice(0, 5), [meetings]);
+  const recent = useMemo(() => meetings.filter((m) => m.status === 'ended').slice(0, 5), [meetings]);
+
+  if (loading) return <LoadingScreen text="Loading dashboard..." />;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
-      <header>
-        <h1
-          style={{
-            fontSize: typography.fontSize['3xl'],
-            fontWeight: typography.fontWeight.bold,
-            marginBottom: spacing.sm,
-            color: palette.text,
-          }}
-        >
-          Welcome back, {profile?.displayName ?? 'there'} 👋
-        </h1>
-        <p
-          style={{
-            fontSize: typography.fontSize.base,
-            color: palette.textSecondary,
-          }}
-        >
-          Here&apos;s what&apos;s happening in your workspace today.
-        </p>
-      </header>
+    <PageLayout>
+      <PageHeader
+        title={`Welcome back, ${profile?.displayName ?? 'there'}`}
+        subtitle={active.length > 0 ? `You have ${active.length} active meeting${active.length > 1 ? 's' : ''}.` : 'No active meetings right now.'}
+        actions={
+          <>
+            <Link href="/meetings"><Button variant="primary" size="sm">＋ New meeting</Button></Link>
+            <Link href="/classroom"><Button variant="secondary" size="sm">📚 Classrooms</Button></Link>
+            <Link href="/recordings"><Button variant="secondary" size="sm">🎬 Recordings</Button></Link>
+            <Link href="/notifications"><Button variant="secondary" size="sm">🔔 Notifications</Button></Link>
+          </>
+        }
+      />
 
-      <section
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: spacing.md,
-        }}
-      >
-        <StatCard
-          title="Active meetings"
-          value={String(data?.active.length ?? 0)}
-          color={colors.semantic.success}
-        />
-        <StatCard
-          title="Scheduled"
-          value={String(data?.upcoming.length ?? 0)}
-          color={colors.brand.primary}
-        />
-        <StatCard
-          title="Recording minutes"
-          value={formatMinutes(data?.platform?.totalRecordingMinutes)}
-          color={colors.semantic.warning}
-        />
-        <StatCard
-          title="Translation minutes"
-          value={formatMinutes(data?.platform?.totalTranslationMinutes)}
-          color={colors.semantic.info}
-        />
-      </section>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+        <StatCard label="Active meetings" value={String(active.length)} color={colors.semantic.success} />
+        <StatCard label="Scheduled" value={String(upcoming.length)} color={colors.brand.primary} />
+        <StatCard label="Recording minutes" value={formatMinutes(platform?.totalRecordingMinutes)} color={colors.semantic.warning} />
+        <StatCard label="Translation minutes" value={formatMinutes(platform?.totalTranslationMinutes)} color={colors.semantic.info} />
+      </div>
 
-      <section
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: spacing.lg,
-        }}
-      >
-        <Card title="Upcoming meetings" palette={palette}>
-          {loading ? (
-            <p style={{ color: palette.textSecondary }}>Loading...</p>
-          ) : (data?.upcoming.length ?? 0) === 0 ? (
-            <p style={{ color: palette.textSecondary }}>
-              No upcoming meetings.{' '}
-              <Link href="/meetings" style={{ color: colors.brand.primary }}>
-                Schedule one
-              </Link>
-            </p>
+      {active.length > 0 && (
+        <section>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: palette.text, margin: '0 0 16px' }}>Active now</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {active.map((m) => (
+              <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', border: `1px solid ${colors.semantic.success}`, borderRadius: '12px', backgroundColor: 'rgba(16,185,129,0.05)' }}>
+                <span style={{ fontWeight: 500, color: palette.text }}>{m.title}</span>
+                <Link href={`/meetings/${m.id}`}><Button variant="primary" size="sm">Join</Button></Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
+        <Card title="Upcoming">
+          {upcoming.length === 0 ? (
+            <p style={{ color: palette.textSecondary, fontSize: '14px' }}>No upcoming meetings. Schedule one to get started.</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-              {data?.upcoming.slice(0, 5).map((m) => (
-                <li key={m.id}>
-                  <Link
-                    href={`/meetings/${m.id}`}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      padding: spacing.md,
-                      border: `1px solid ${palette.border}`,
-                      borderRadius: radius.md,
-                      textDecoration: 'none',
-                      color: palette.text,
-                    }}
-                  >
-                    <span style={{ fontWeight: typography.fontWeight.medium }}>{m.title}</span>
-                    <span style={{ fontSize: typography.fontSize.xs, color: palette.textSecondary }}>
-                      {m.status} · max {m.maxParticipants} participants
-                    </span>
-                  </Link>
-                </li>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {upcoming.map((m) => (
+                <Link key={m.id} href={`/meetings/${m.id}`} style={{ textDecoration: 'none' }}>
+                  <div style={{ padding: '8px', border: `1px solid ${palette.border}`, borderRadius: '8px', cursor: 'pointer' }}>
+                    <span style={{ fontWeight: 500, color: palette.text }}>{m.title}</span>
+                    <span style={{ display: 'block', fontSize: '12px', color: palette.textSecondary }}>{new Date(m.createdAt).toLocaleDateString()} · max {m.maxParticipants} participants</span>
+                  </div>
+                </Link>
               ))}
-            </ul>
+            </div>
           )}
         </Card>
 
-        <Card title="Active now" palette={palette}>
-          {loading ? (
-            <p style={{ color: palette.textSecondary }}>Loading...</p>
-          ) : (data?.active.length ?? 0) === 0 ? (
-            <p style={{ color: palette.textSecondary }}>No active meetings.</p>
+        <Card title="Recent meetings">
+          {recent.length === 0 ? (
+            <p style={{ color: palette.textSecondary, fontSize: '14px' }}>No recent meetings.</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-              {data?.active.slice(0, 5).map((m) => (
-                <li
-                  key={m.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: spacing.md,
-                    border: `1px solid ${colors.semantic.success}`,
-                    borderRadius: radius.md,
-                    backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.05)',
-                    color: palette.text,
-                  }}
-                >
-                  <span style={{ fontWeight: typography.fontWeight.medium }}>{m.title}</span>
-                  <Link
-                    href={`/meetings/${m.id}`}
-                    style={{
-                      color: colors.semantic.success,
-                      fontWeight: typography.fontWeight.semibold,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Join →
-                  </Link>
-                </li>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {recent.map((m) => (
+                <div key={m.id} style={{ padding: '8px', border: `1px solid ${palette.border}`, borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <span style={{ fontWeight: 500, color: palette.text, fontSize: '14px' }}>{m.title}</span>
+                    <span style={{ display: 'block', fontSize: '12px', color: palette.textSecondary }}>{new Date(m.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  {m.endedAt && (
+                    <span style={{ fontSize: '12px', color: palette.textSecondary }}>{formatMinutes(diffMinutes(m.createdAt, m.endedAt))}</span>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </Card>
-      </section>
+      </div>
 
-      <Card title="Platform metrics (this month)" palette={palette}>
-        {data?.platform ? (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: spacing.md,
-            }}
-          >
-            <MetricCell label="Daily active users" value={data.platform.dailyActiveUsers.toLocaleString()} />
-            <MetricCell label="Monthly active users" value={data.platform.monthlyActiveUsers.toLocaleString()} />
-            <MetricCell label="Total meetings" value={data.platform.totalMeetings.toLocaleString()} />
-            <MetricCell label="Meeting minutes" value={data.platform.totalMeetingMinutes.toLocaleString()} />
+      <Card title="Platform metrics (this month)">
+        {platform ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+            <MetricCell label="Daily active users" value={platform.dailyActiveUsers.toLocaleString()} />
+            <MetricCell label="Monthly active users" value={platform.monthlyActiveUsers.toLocaleString()} />
+            <MetricCell label="Total meetings" value={platform.totalMeetings.toLocaleString()} />
+            <MetricCell label="Meeting minutes" value={platform.totalMeetingMinutes.toLocaleString()} />
+            <MetricCell label="Translation minutes" value={formatMinutes(platform.totalTranslationMinutes)} />
+            <MetricCell label="Recording minutes" value={formatMinutes(platform.totalRecordingMinutes)} />
           </div>
         ) : (
-          <p style={{ color: palette.textSecondary }}>Platform metrics unavailable.</p>
+          <p style={{ color: palette.textSecondary, margin: 0 }}>Platform metrics unavailable.</p>
         )}
       </Card>
-    </div>
-  );
-}
 
-function Card({
-  title,
-  children,
-  palette,
-}: {
-  readonly title: string;
-  readonly children: React.ReactNode;
-  readonly palette: Palette;
-}) {
-  return (
-    <section
-      style={{
-        padding: spacing.lg,
-        backgroundColor: palette.surface,
-        border: `1px solid ${palette.border}`,
-        borderRadius: radius.lg,
-      }}
-    >
-      <h2
-        style={{
-          fontSize: typography.fontSize.lg,
-          fontWeight: typography.fontWeight.semibold,
-          marginBottom: spacing.md,
-          color: palette.text,
-        }}
-      >
-        {title}
-      </h2>
-      {children}
-    </section>
+      {meetings.length > 0 && (
+        <Card title="Activity summary">
+          <BarRow label={`Active (${active.length})`} count={active.length} total={meetings.length} color={colors.semantic.success} />
+          <BarRow label={`Scheduled (${upcoming.length})`} count={upcoming.length} total={meetings.length} color={colors.brand.primary} />
+          <BarRow label={`Ended (${recent.length})`} count={recent.length} total={meetings.length} color={palette.textSecondary} />
+        </Card>
+      )}
+    </PageLayout>
   );
-}
-
-function StatCard({ title, value, color }: { readonly title: string; readonly value: string; readonly color: string }) {
-  return (
-    <div
-      style={{
-        padding: spacing.lg,
-        backgroundColor: colors.light.surface,
-        border: `1px solid ${colors.light.border}`,
-        borderRadius: radius.lg,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: spacing.xs,
-      }}
-    >
-      <span style={{ fontSize: typography.fontSize.sm, color: colors.light.textSecondary }}>{title}</span>
-      <span style={{ fontSize: typography.fontSize['2xl'], fontWeight: typography.fontWeight.bold, color }}>{value}</span>
-    </div>
-  );
-}
-
-function MetricCell({ label, value }: { readonly label: string; readonly value: string }) {
-  return (
-    <div
-      style={{
-        padding: spacing.md,
-        backgroundColor: colors.light.surfaceVariant,
-        borderRadius: radius.md,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: spacing.xs,
-      }}
-    >
-      <span style={{ fontSize: typography.fontSize.xs, color: colors.light.textSecondary }}>{label}</span>
-      <span style={{ fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold }}>
-        {value}
-      </span>
-    </div>
-  );
-}
-
-function formatMinutes(value: number | undefined): string {
-  if (value === undefined) return '—';
-  if (value >= 60) return `${(value / 60).toFixed(1)}h`;
-  return `${value}m`;
 }
